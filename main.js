@@ -360,10 +360,9 @@ function addBaselineLine(country, metric) {
 
   // Find the baseline value for the selected country and metric
   //console.log(JSON.stringify(cleanedData, null, 2));
- // console.log("Here is the country and metric printed: " + country + "and the metric " + metric +"");
-  var baselineValue = cleanedData.find((row) => row.indicator == country)[
-    metric
-  ];
+  // console.log("Here is the country and metric printed: " + country + "and the metric " + metric +"");
+  const baselineRow = cleanedData.find((row) => row.indicator == country);
+  const baselineValue = baselineRow ? baselineRow[metric] : 0;
 
   // Remove any existing baseline line
   if (baselineLine) {
