@@ -217,11 +217,16 @@ function updateLabels() {
 }
 
 function addBaselineLine(country, metric) {
+  if(metric!='GDP  ($ USD billions PPP)'){
+    metric = metricMapping[metric]
+  }
+  console.log("Here we got the metric: " + metric)
   // Get the selected country's code
   const countryCode = cleanedData.find(
     (row) => row.indicator === country
   ).country_code;
-
+    console.log(countryCode);
+    console.log(metric);
   // Find the baseline value for the selected country and metric
   const baselineValue = cleanedData.find(
     (row) => row.country_code === countryCode && row.year === "2016"
