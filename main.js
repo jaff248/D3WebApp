@@ -147,17 +147,15 @@ function populateYearSelect(data) {
       2019,
       2020,
       2021,
-      "2021 or latest",
+      "2021 or latest"
     ],
     health_expenditure_per_person: [
       2015,
       2018,
-      2019,
-      2020,
-      "2017 (latest year)",
+      2019
     ],
     military_spending: [2019, 2021],
-    unemployment: [2018, 2021, "latest year", 2020],
+    unemployment: [2018, 2021],
   };
 
   while (yearSelect.firstChild) {
