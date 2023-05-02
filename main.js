@@ -10,7 +10,7 @@ const metricMapping = {
   health_expenditure: "health expenditure  % of GDP",
   health_expenditure_per_person: "health expenditure  per person",
   military_spending: "Military expenditure (% of GDP)",
-  unemployment: "unemployment (%)"
+  unemployment: "unemployment (%)",
 };
 
 // Create the svg canvas
@@ -78,7 +78,6 @@ d3.csv("countries.csv").then((data) => {
   const selectedCountry = document.getElementById("countrySelect").value;
   const selectedMetricDropdown = document.getElementById("metricSelect");
   const selectedMetric = metricMapping[selectedMetricDropdown.value];
-  
 
   // Filter the data by the selected country
   const filteredData = cleanedData.filter(
@@ -217,19 +216,20 @@ function updateLabels() {
 }
 
 function addBaselineLine(country, metric) {
-  if(metric!='GDP  ($ USD billions PPP)'){
-    metric = metricMapping[metric]
+  if (metric != "GDP  ($ USD billions PPP)") {
+    metric = metricMapping[metric];
   }
-  console.log("Here we got the metric: " + metric)
+  console.log("Here we got the metric: " + metric);
   // Get the selected country's code
   const countryCode = cleanedData.find(
     (row) => row.indicator === country
   ).country_code;
-    console.log(countryCode);
-    console.log(metric);
+  console.log("cntr: " + country);
   // Find the baseline value for the selected country and metric
+  console.log(countryCode);
+  console.log(JSON.stringify(cleanedData));
   const baselineValue = cleanedData.find(
-    (row) => row.country_code === countryCode && row.year === "2016"
+    (row) => row.country_code === countryCode
   )[metric];
 
   // Remove any existing baseline line
