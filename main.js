@@ -1,10 +1,10 @@
 // Set the dimensions of the canvas
-const margin = { top: 20, right: 20, bottom: 70, left: 40 };
-const width = 600 - margin.left - margin.right;
-const height = 400 - margin.top - margin.bottom;
+var margin = { top: 20, right: 20, bottom: 70, left: 40 };
+var width = 600 - margin.left - margin.right;
+var height = 400 - margin.top - margin.bottom;
 
 //Mapping for HTML
-const metricMapping = {
+var metricMapping = {
   gdp: "GDP  ($ USD billions PPP)",
   gdp_per_capita: "GDP per capita in $ (PPP)",
   health_expenditure: "health expenditure  % of GDP",
@@ -14,7 +14,7 @@ const metricMapping = {
 };
 
 // Create the svg canvas
-const svg = d3
+var svg = d3
   .select("#visualization")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
@@ -23,23 +23,23 @@ const svg = d3
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Set the x and y scales
-const xScale = d3.scaleBand().range([0, width]).padding(0.1);
-const yScale = d3.scaleLinear().range([height, 0]);
+var xScale = d3.scaleBand().range([0, width]).padding(0.1);
+var yScale = d3.scaleLinear().range([height, 0]);
 
 // Set the x and y axis
-const xAxis = d3.axisBottom(xScale);
-const yAxis = d3.axisLeft(yScale);
+var xAxis = d3.axisBottom(xScale);
+var yAxis = d3.axisLeft(yScale);
 
 //Labels
 // Add labels for x-axis, y-axis, and title
-const xAxisLabel = svg
+var xAxisLabel = svg
   .append("text")
   .attr("x", width / 2)
   .attr("y", height + margin.bottom / 2)
   .style("text-anchor", "middle")
   .attr("class", "axis-label");
 
-const yAxisLabel = svg
+var yAxisLabel = svg
   .append("text")
   .attr("x", -height / 2)
   .attr("y", -margin.left / 1.5)
@@ -47,7 +47,7 @@ const yAxisLabel = svg
   .style("text-anchor", "middle")
   .attr("class", "axis-label");
 
-const titleLabel = svg
+var titleLabel = svg
   .append("text")
   .attr("x", width / 2)
   .attr("y", -margin.top / 2)
@@ -62,9 +62,9 @@ d3.csv("countries.csv").then((data) => {
   yScale.domain([0, 100]);
   // Clean the data
   cleanedData = data.map((row) => {
-    const newRow = {};
-    for (const key in row) {
-      const newKey = key.trim().replace(/[\n\r]+/g, " ");
+    var newRow = {};
+    for (var key in row) {
+      var newKey = key.trim().replace(/[\n\r]+/g, " ");
       newRow[newKey] = row[key];
     }
     return newRow;
@@ -75,14 +75,16 @@ d3.csv("countries.csv").then((data) => {
   populateMetricSelect(cleanedData);
 
   // Get the selected country and metric from the dropdowns
-  const selectedCountry = document.getElementById("countrySelect").value;
-  const selectedMetricDropdown = document.getElementById("metricSelect");
-  const selectedMetric = metricMapping[selectedMetricDropdown.value];
+  var selectedCountry = document.getElementById("countrySelect");
+  console.log(selectedCountry);
+  var selectedMetricDropdown = document.getElementById("metricSelect");
+  var selectedMetric = metricMapping[selectedMetricDropdown.value];
 
   // Filter the data by the selected country
-  const filteredData = cleanedData.filter(
+  var filteredData = cleanedData.filter(
     (row) => row.indicator === selectedCountry
   );
+  console.log(filteredData);
 
   // Set the domain for the x and y scales based on the selected metric
   xScale.domain(filteredData.map((row) => row.year));
@@ -114,11 +116,11 @@ d3.csv("countries.csv").then((data) => {
 });
 
 function populateCountrySelect(data) {
-  const countrySelect = document.getElementById("countrySelect");
-  const uniqueCountries = [...new Set(data.map((row) => row.indicator))];
+  var countrySelect = document.getElementById("countrySelect");
+  var uniqueCountries = [...new Set(data.map((row) => row.indicator))];
 
   uniqueCountries.forEach((country) => {
-    const option = document.createElement("option");
+    var option = document.createElement("option");
     option.value = country;
     option.textContent = country;
     countrySelect.appendChild(option);
@@ -129,8 +131,8 @@ function populateCountrySelect(data) {
 }
 
 function populateMetricSelect(data) {
-  const metricSelect = document.getElementById("metricSelect");
-  const allowedMetrics = [
+  var metricSelect = document.getElementById("metricSelect");
+  var allowedMetrics = [
     "gdp",
     "gdp_per_capita",
     "health_expenditure",
@@ -138,12 +140,12 @@ function populateMetricSelect(data) {
     "military_spending",
     "unemployment",
   ];
-  const metrics = Object.keys(data[0]).filter((key) =>
+  var metrics = Object.keys(data[0]).filter((key) =>
     allowedMetrics.includes(key)
   );
 
   metrics.forEach((metric) => {
-    const option = document.createElement("option");
+    var option = document.createElement("option");
     option.value = metric;
     option.textContent = metric;
     metricSelect.appendChild(option);
@@ -154,15 +156,15 @@ function populateMetricSelect(data) {
 }
 function updateChart() {
   // Get the selected country and metric from the dropdowns
-  const selectedCountry = document.getElementById("countrySelect").value;
-  const selectedMetric = document.getElementById("metricSelect").value;
+  var selectedCountry = document.getElementById("countrySelect").value;
+  var selectedMetric = document.getElementById("metricSelect").value;
 
   if (!selectedMetric) {
     return;
   }
 
   // Filter the data by the selected country
-  const filteredData = cleanedData.filter(
+  var filteredData = cleanedData.filter(
     (row) => row.indicator === selectedCountry
   );
 
@@ -175,7 +177,7 @@ function updateChart() {
   svg.select(".y-axis").transition().duration(500).call(yAxis);
 
   // Update the bars
-  const bars = svg.selectAll("rect").data(filteredData);
+  var bars = svg.selectAll("rect").data(filteredData);
 
   bars
     .enter()
@@ -196,12 +198,13 @@ function updateChart() {
   updateLabels();
 
   // Add or update the baseline line
+  console.log(JSON.stringify(cleanedData, null, 2));
   addBaselineLine(selectedCountry, selectedMetric);
 }
 
 function updateLabels() {
-  const selectedMetric = document.getElementById("metricSelect").value;
-  const metricLabel = {
+  var selectedMetric = document.getElementById("metricSelect").value;
+  var metricLabel = {
     gdp: "GDP ($ USD billions PPP)",
     gdp_per_capita: "GDP per capita in $ (PPP)",
     health_expenditure: "Health expenditure % of GDP",
@@ -219,18 +222,12 @@ function addBaselineLine(country, metric) {
   if (metric != "GDP  ($ USD billions PPP)") {
     metric = metricMapping[metric];
   }
-  console.log("Here we got the metric: " + metric);
-  // Get the selected country's code
-  const countryCode = cleanedData.find(
-    (row) => row.indicator === country
-  ).country_code;
-  console.log("cntr: " + country);
+  console.log(cleanedData.columns);
   // Find the baseline value for the selected country and metric
-  console.log(countryCode);
-  console.log(JSON.stringify(cleanedData));
-  const baselineValue = cleanedData.find(
-    (row) => row.country_code === countryCode
-  )[metric];
+  //console.log(JSON.stringify(cleanedData, null, 2));
+  var baselineValue = cleanedData.find((row) => row.indicator == country)[
+    metric
+  ];
 
   // Remove any existing baseline line
   if (baselineLine) {
@@ -247,4 +244,5 @@ function addBaselineLine(country, metric) {
     .attr("stroke", "red")
     .attr("stroke-dasharray", "5,5")
     .attr("stroke-width", 1);
+  console.log("baseline: " + baselineValue);
 }
