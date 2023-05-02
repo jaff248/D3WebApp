@@ -72,10 +72,12 @@ d3.csv("countries.csv").then((data) => {
 
   // Call the populate functions to create the dropdowns
   populateCountrySelect(cleanedData);
+  populateYearSelect(cleanedData);
   populateMetricSelect(cleanedData);
 
   // Get the selected country and metric from the dropdowns
   var selectedCountry = document.getElementById("countrySelect");
+  var selectedYear = document.getElementById("yearSelect");
   console.log(selectedCountry);
   var selectedMetricDropdown = document.getElementById("metricSelect");
   var selectedMetric = metricMapping[selectedMetricDropdown.value];
@@ -130,8 +132,140 @@ function populateCountrySelect(data) {
   countrySelect.addEventListener("change", updateChart);
 }
 
+function populateYearSelect(data) {
+  // ADDS YEARS BASED ON THE METRIC CHOSEN
+  // initial call AND event listener
+  var yearSelect = document.getElementById("yearSelect");
+  var selectedMetric = document.getElementById("metricSelect").value;
+  console.log(selectedMetric);
+  if (selectedMetric == "gdp" || selectedMetric == "gdp_per_capita") {
+    const parent = document.getElementById("yearSelect");
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+    var option = document.createElement("option");
+    option.value = "2018";
+    option.textContent = "2018";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2019";
+    option.textContent = "2019";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2020";
+    option.textContent = "2020";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2021";
+    option.textContent = "2021";
+    yearSelect.appendChild(option);
+  } else if (selectedMetric == "health_expenditure") {
+    const parent = document.getElementById("yearSelect");
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+    var option = document.createElement("option");
+    option.value = "2014";
+    option.textContent = "2014";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2015";
+    option.textContent = "2015";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2016";
+    option.textContent = "2016";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2017";
+    option.textContent = "2017";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2018";
+    option.textContent = "2018";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2019";
+    option.textContent = "2019";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2020";
+    option.textContent = "2020";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2021";
+    option.textContent = "2021";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2021 or latest";
+    option.textContent = "2021 or latest";
+    yearSelect.appendChild(option);
+  } else if (selectedMetric == "health_expenditure_per_person") {
+    const parent = document.getElementById("yearSelect");
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+    var option = document.createElement("option");
+    option.value = "2015";
+    option.textContent = "2015";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2018";
+    option.textContent = "2018";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2019";
+    option.textContent = "2019";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2020";
+    option.textContent = "2020";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2017 (latest year)";
+    option.textContent = "2017 (latest year)";
+    yearSelect.appendChild(option);
+  } else if (selectedMetric == "military_spending") {
+    const parent = document.getElementById("yearSelect");
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+    var option = document.createElement("option");
+    option.value = "2021";
+    option.textContent = "2021";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2019";
+    option.textContent = "2019";
+    yearSelect.appendChild(option);
+  } else if (selectedMetric == "unemployment") {
+    const parent = document.getElementById("yearSelect");
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+    var option = document.createElement("option");
+    option.value = "2018";
+    option.textContent = "2018";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2021";
+    option.textContent = "2021";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "latest year";
+    option.textContent = "latest year";
+    yearSelect.appendChild(option);
+    var option = document.createElement("option");
+    option.value = "2020";
+    option.textContent = "2020";
+    yearSelect.appendChild(option);
+  }
+  // Add event listener to update the chart when the country is changed
+  yearSelect.addEventListener("change", updateChart);
+}
+
 function populateMetricSelect(data) {
-  var metricSelect = document.getElementById("metricSelect");
+  metricSelect = document.getElementById("metricSelect");
   var allowedMetrics = [
     "gdp",
     "gdp_per_capita",
@@ -158,6 +292,8 @@ function updateChart() {
   // Get the selected country and metric from the dropdowns
   var selectedCountry = document.getElementById("countrySelect").value;
   var selectedMetric = document.getElementById("metricSelect").value;
+  populateYearSelect(cleanedData);
+  var selectedYear = document.getElementById("yearSelect").value;
 
   if (!selectedMetric) {
     return;
