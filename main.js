@@ -9,7 +9,7 @@ var metricMapping = {
   gdp_per_capita: "GDP per capita in $ (PPP)",
   health_expenditure: "health expenditure  % of GDP",
   health_expenditure_per_person: "health expenditure  per person",
-  military_spending: "Military expenditure (% of GDP)",
+  military_spending: "Military Spending as % of GDP",
   unemployment: "unemployment (%)",
 };
 
@@ -314,7 +314,6 @@ function updateChart() {
 
   // Update the bars
   var bars = svg.selectAll("rect").data(filteredData);
-
   bars
     .enter()
     .append("rect")
@@ -358,9 +357,10 @@ function addBaselineLine(country, metric) {
   if (metric != "GDP  ($ USD billions PPP)") {
     metric = metricMapping[metric];
   }
-  console.log(cleanedData.columns);
+
   // Find the baseline value for the selected country and metric
   //console.log(JSON.stringify(cleanedData, null, 2));
+ // console.log("Here is the country and metric printed: " + country + "and the metric " + metric +"");
   var baselineValue = cleanedData.find((row) => row.indicator == country)[
     metric
   ];
