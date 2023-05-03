@@ -1,7 +1,7 @@
 // Set the dimensions of the canvas
 var margin = { top: 20, right: 20, bottom: 70, left: 40 };
 var width = 2400 - margin.left - margin.right;
-var height = 800 - margin.top - margin.bottom;
+var height = 1000 - margin.top - margin.bottom;
 
 //Mapping for HTML
 var metricMapping = {
@@ -28,18 +28,17 @@ var xScale = d3.scaleBand().domain([0, width]).padding(0.1);
 var yScale = d3.scaleLinear().range([height, 0]);
 
 // Set the x and y axis
-var xAxis = d3.axisBottom(xScale).tickSizeOuter(0); // Remove outer ticks
+var xAxis = d3.axisBottom(xScale); // Remove outer ticks
 var yAxis = d3.axisLeft(yScale);
 
 //Labels
-// Add labels for x-axis, y-axis, and title
+// Add labels for x-axis, y-axis, and title this is the country label, then Y label, then title for graph
 var xAxisLabel = svg
   .append("text")
   .attr("x", width / 2)
-  .attr("y", height + margin.bottom / 2)
+  .attr("y", height + margin.bottom)
   .style("text-anchor", "middle")
   .attr("class", "axis-label");
-
 var yAxisLabel = svg
   .append("text")
   .attr("x", -height / 2)
@@ -60,7 +59,6 @@ let baselineLine;
 
 //Load coutnries
 d3.csv("countries.csv").then((data) => {
-  yScale.domain([0, 100]);
   // Clean the data
   cleanedData = data.map((row) => {
     var newRow = {};
@@ -92,41 +90,34 @@ d3.csv("countries.csv").then((data) => {
   console.log(filteredData);
 
   //Bonk
-  countries = cleanedData.map(function(d){
+  countries = cleanedData.map(function (d) {
     //console.log(d)
-    return d.indicator
-  })
+    return d.indicator;
+  });
 
-  //Y 
-  countrys = cleanedData.map(function (d){
-    console.log(d[selectedMetric])
-    return d[selectedMetric]
-  })
-
+  //Y
+  countrys = cleanedData.map(function (d) {
+    console.log(d[selectedMetric]);
+    return d[selectedMetric];
+  });
 
   //Set domain for the x scale
-  xScale.domain(countries)
-  .range([0,width])
+  xScale.domain(countries).range([0, width]);
 
   // Set the domain for the y scales based on the selected metric
-  yScale.domain(countrys)
-  .range([0,height])
-  
-  
-
+  yScale.domain(countrys).range([0, height]);
   // Create the x and y axis
   // Create the x and y axis
-svg
-.append("g")
-.attr("class", "x-axis")
-.attr("transform", "translate(0," + height + ")")
-.call(xAxis)
-.selectAll("text") // <- Add this line
-.style("text-anchor", "end") // <- Add this line
-.attr("dx", "-0.8em") // <- Add this line
-.attr("dy", "0.15em") // <- Add this line
-.attr("transform", "rotate(-65)"); // <- Add this line
-
+  svg
+    .append("g")
+    .attr("class", "x-axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+    .selectAll("text") // <- Add this line
+    .style("text-anchor", "end") // <- Add this line
+    .attr("dx", "-0.8em") // <- Add this line
+    .attr("dy", "0.15em") // <- Add this line
+    .attr("transform", "rotate(-65)"); // <- Add this line
 
   svg.append("g").attr("class", "y-axis").call(yAxis);
 
@@ -136,10 +127,12 @@ svg
     .data(filteredData)
     .enter()
     .append("rect")
-    .attr("x", width/200)
-    .attr("y", (d) => yScale(d[selectedMetric]), 
-    console.log(yScale(d[selectedMetric])
-    ))
+    .attr("x", width / 200)
+    .attr(
+      "y",
+      (d) => yScale(d[selectedMetric]),
+      console.log(yScale(d[selectedMetric]))
+    )
     .attr("width", xScale.bandwidth())
     .attr("height", (d) => height - yScale(d[selectedMetric]))
     .attr("fill", "steelblue");
@@ -178,13 +171,9 @@ function populateYearSelect(data) {
       2019,
       2020,
       2021,
-      "2021 or latest"
+      "2021 or latest",
     ],
-    health_expenditure_per_person: [
-      2015,
-      2018,
-      2019
-    ],
+    health_expenditure_per_person: [2015, 2018, 2019],
     military_spending: [2019, 2021],
     unemployment: [2018, 2021],
   };
@@ -232,7 +221,9 @@ function populateMetricSelect(data) {
 function updateChart() {
   // Get the selected country and metric from the dropdowns
   var selectedCountry = document.getElementById("countrySelect").value;
-  var selectedMetric = document.getElementById("metricSelect").value;
+  var selectedMetricDropdown = document.getElementById("metricSelect");
+  var selectedMetric = metricMapping[selectedMetricDropdown.value];
+
   populateYearSelect(cleanedData);
   var selectedYear = document.getElementById("yearSelect").value;
 
@@ -246,13 +237,15 @@ function updateChart() {
   );
 
   //Set domain for x scale
-  xScale.domain(countries)
-  .range([0,width])
+  xScale.domain(countries).range([0, width]);
   // Set the domain for the y scales based on the selected metric
-
-  
-  yScale.domain(countrys)
-  .range([0,height])
+  // Update the yScale domain based on the new metric
+  yScale.domain([
+    d3.max(filteredData, function (d) {
+      return parseFloat(d[selectedMetric]);
+    }),
+    0,
+  ]);
 
   // Update the x and y axis
   svg.select(".x-axis").transition().duration(500).call(xAxis);
@@ -293,7 +286,6 @@ function updateLabels() {
     military_spending: "Military Spending as % of GDP",
     unemployment: "Unemployment",
   };
-
   xAxisLabel.text("Countries");
   yAxisLabel.text(metricLabel[selectedMetric]);
   titleLabel.text(`Comparison of ${metricLabel[selectedMetric]}`);
