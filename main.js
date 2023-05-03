@@ -1,7 +1,7 @@
 // Set the dimensions of the canvas
 var margin = { top: 20, right: 20, bottom: 70, left: 40 };
-var width = 600 - margin.left - margin.right;
-var height = 400 - margin.top - margin.bottom;
+var width = 2400 - margin.left - margin.right;
+var height = 800 - margin.top - margin.bottom;
 
 //Mapping for HTML
 var metricMapping = {
@@ -23,11 +23,12 @@ var svg = d3
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Set the x and y scales
-var xScale = d3.scaleBand().range([0, width]).padding(0.1);
+var xScale = d3.scaleBand().domain([0, width]).padding(0.1);
+//Linear
 var yScale = d3.scaleLinear().range([height, 0]);
 
 // Set the x and y axis
-var xAxis = d3.axisBottom(xScale);
+var xAxis = d3.axisBottom(xScale).tickSizeOuter(0); // Remove outer ticks
 var yAxis = d3.axisLeft(yScale);
 
 //Labels
@@ -70,6 +71,8 @@ d3.csv("countries.csv").then((data) => {
     return newRow;
   });
 
+  cleanedData = cleanedData.slice(4, 178);
+
   // Call the populate functions to create the dropdowns
   populateCountrySelect(cleanedData);
   populateYearSelect(cleanedData);
@@ -88,16 +91,42 @@ d3.csv("countries.csv").then((data) => {
   );
   console.log(filteredData);
 
-  // Set the domain for the x and y scales based on the selected metric
-  xScale.domain(filteredData.map((row) => row.year));
-  yScale.domain([0, d3.max(filteredData, (row) => +row[selectedMetric])]);
+  //Bonk
+  countries = cleanedData.map(function(d){
+    //console.log(d)
+    return d.indicator
+  })
+
+  //Y 
+  countrys = cleanedData.map(function (d){
+    console.log(d[selectedMetric])
+    return d[selectedMetric]
+  })
+
+
+  //Set domain for the x scale
+  xScale.domain(countries)
+  .range([0,width])
+
+  // Set the domain for the y scales based on the selected metric
+  yScale.domain(countrys)
+  .range([0,height])
+  
+  
 
   // Create the x and y axis
-  svg
-    .append("g")
-    .attr("class", "x-axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+  // Create the x and y axis
+svg
+.append("g")
+.attr("class", "x-axis")
+.attr("transform", "translate(0," + height + ")")
+.call(xAxis)
+.selectAll("text") // <- Add this line
+.style("text-anchor", "end") // <- Add this line
+.attr("dx", "-0.8em") // <- Add this line
+.attr("dy", "0.15em") // <- Add this line
+.attr("transform", "rotate(-65)"); // <- Add this line
+
 
   svg.append("g").attr("class", "y-axis").call(yAxis);
 
@@ -107,8 +136,10 @@ d3.csv("countries.csv").then((data) => {
     .data(filteredData)
     .enter()
     .append("rect")
-    .attr("x", (d) => xScale(d.year))
-    .attr("y", (d) => yScale(d[selectedMetric]))
+    .attr("x", width/200)
+    .attr("y", (d) => yScale(d[selectedMetric]), 
+    console.log(yScale(d[selectedMetric])
+    ))
     .attr("width", xScale.bandwidth())
     .attr("height", (d) => height - yScale(d[selectedMetric]))
     .attr("fill", "steelblue");
@@ -214,9 +245,14 @@ function updateChart() {
     (row) => row.indicator === selectedCountry
   );
 
-  // Set the domain for the x and y scales based on the selected metric
-  xScale.domain(filteredData.map((row) => row.year));
-  yScale.domain([0, d3.extent(filteredData, (row) => +row[selectedMetric])[1]]);
+  //Set domain for x scale
+  xScale.domain(countries)
+  .range([0,width])
+  // Set the domain for the y scales based on the selected metric
+
+  
+  yScale.domain(countrys)
+  .range([0,height])
 
   // Update the x and y axis
   svg.select(".x-axis").transition().duration(500).call(xAxis);
@@ -230,7 +266,7 @@ function updateChart() {
     .merge(bars)
     .transition()
     .duration(500)
-    .attr("x", (d) => xScale(d.year))
+    .attr("x", (d) => xScale(width))
     .attr("y", (d) => yScale(d[selectedMetric]))
     .attr("width", xScale.bandwidth())
     .attr("height", (d) => height - yScale(d[selectedMetric]))
