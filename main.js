@@ -54,6 +54,8 @@ var titleLabel = svg
   .style("text-anchor", "middle")
   .attr("class", "title-label");
 
+//Yeared Data has years, cleaned only has countrys so easier to graph
+let yearedData;
 let cleanedData;
 let baselineLine;
 
@@ -68,7 +70,7 @@ d3.csv("countries.csv").then((data) => {
     }
     return newRow;
   });
-
+  yearedData = cleanedData
   cleanedData = cleanedData.slice(4, 178);
 
   // Call the populate functions to create the dropdowns
@@ -104,8 +106,9 @@ d3.csv("countries.csv").then((data) => {
   //Set domain for the x scale
   xScale.domain(countries).range([0, width]);
 
-  // Set the domain for the y scales based on the selected metric
-  yScale.domain(countrys).range([0, height]);
+// Set the domain for the y scales based on the selected metric
+yScale.domain([0, d3.max(countrys)]).range([height, 0]);
+
   // Create the x and y axis
   // Create the x and y axis
   svg
@@ -121,21 +124,17 @@ d3.csv("countries.csv").then((data) => {
 
   svg.append("g").attr("class", "y-axis").call(yAxis);
 
-  // Create the bars
-  svg
-    .selectAll("rect")
-    .data(filteredData)
-    .enter()
-    .append("rect")
-    .attr("x", width / 200)
-    .attr(
-      "y",
-      (d) => yScale(d[selectedMetric]),
-      console.log(yScale(d[selectedMetric]))
-    )
-    .attr("width", xScale.bandwidth())
-    .attr("height", (d) => height - yScale(d[selectedMetric]))
-    .attr("fill", "steelblue");
+// Create the bars
+svg
+  .selectAll("rect")
+  .data(cleanedData)
+  .enter()
+  .append("rect")
+  .attr("x", (d) => xScale(d.indicator))
+  .attr("y", (d) => yScale(d[selectedMetric]))
+  .attr("width", xScale.bandwidth())
+  .attr("height", (d) => height - yScale(d[selectedMetric]))
+  .attr("fill", "steelblue");
 
   updateLabels();
   addBaselineLine(selectedCountry, selectedMetric);
@@ -231,20 +230,17 @@ function updateChart() {
     return;
   }
 
-  // Filter the data by the selected country
-  var filteredData = cleanedData.filter(
-    (row) => row.indicator === selectedCountry
-  );
+  // Filter the data based on the selected metric
+  var filteredData = cleanedData.map((row) => {
+    return { indicator: row.indicator, value: parseFloat(row[selectedMetric]) };
+  });
 
-  //Set domain for x scale
-  xScale.domain(countries).range([0, width]);
-  // Set the domain for the y scales based on the selected metric
   // Update the yScale domain based on the new metric
   yScale.domain([
-    d3.max(filteredData, function (d) {
-      return parseFloat(d[selectedMetric]);
-    }),
     0,
+    d3.max(filteredData, function (d) {
+      return d.value;
+    }),
   ]);
 
   // Update the x and y axis
@@ -254,27 +250,23 @@ function updateChart() {
   // Update the bars
   var bars = svg.selectAll("rect").data(filteredData);
   bars
-    .enter()
-    .append("rect")
-    .merge(bars)
+    .join("rect")
     .transition()
     .duration(500)
-    .attr("x", (d) => xScale(width))
-    .attr("y", (d) => yScale(d[selectedMetric]))
+    .attr("x", (d) => xScale(d.indicator))
+    .attr("y", (d) => yScale(d.value))
     .attr("width", xScale.bandwidth())
-    .attr("height", (d) => height - yScale(d[selectedMetric]))
+    .attr("height", (d) => height - yScale(d.value))
     .attr("fill", "steelblue");
-
-  // Remove old bars
-  bars.exit().remove();
 
   // Update the labels
   updateLabels();
 
   // Add or update the baseline line
-  console.log(JSON.stringify(cleanedData, null, 2));
   addBaselineLine(selectedCountry, selectedMetric);
 }
+
+
 
 function updateLabels() {
   var selectedMetric = document.getElementById("metricSelect").value;
