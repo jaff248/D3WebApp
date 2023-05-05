@@ -1,11 +1,47 @@
+indicator,ISO Country code 2018,population 2018,surface area (Km2) 2018, ,GINI index varies by country,happy planet index 2016,happy planet index 2019,human development index 2017,human development index 2021,sustainable economic development assessment (SEDA) 2018, ,"GDP growth
+(annual %) 2018","GDP growth
+(annual %) 2021 or latest year","GDP 
+($ USD billions PPP) 2018","GDP 
+($ USD billions PPP) 2019","GDP 
+($ USD billions PPP) 2020","GDP 
+($ USD billions PPP) 2021",GDP per capita in $ (PPP) 2018,GDP per capita in $ (PPP) 2019,GDP per capita in $ (PPP) 2020,GDP per capita in $ (PPP) 2021,Economic Growth 2018,Economic Growth 2021 or latest,Economic Growth ,"health expenditure 
+% of GDP 2014","health expenditure 
+% of GDP 2015","health expenditure 
+% of GDP 2016","health expenditure 
+% of GDP 2017","health expenditure 
+% of GDP 2018","health expenditure 
+% of GDP 2019","health expenditure 
+% of GDP 2020","health expenditure 
+% of GDP 2021","health expenditure 
+% of GDP 2021 or latest","health expenditure 
+per person 2015","health expenditure 
+per person 2018","health expenditure 
+per person 2019",infant mortality 2020,"maternal mortality per 100,000 live births 2017 (latest year)","maternal mortality per 100,000 live births ","education expenditure
+% of GDP 2014","education expenditure
+% of GDP 2018","education expenditure
+% of GDP 2021 or latest year",Education as % of GDP 2018,Education as % of GDP 2021 or latest,% of primary school aged kids out of school 2018,% of primary school aged kids out of school 2021 or latest year, ,unemployment (%) 2018,unemployment (%) 2021,% of population in extreme poverty latest year,% of population with access to electricity 2020, ,political rights score  2018, 2022,civil liberties score  2018, 2022,political stability & absence of violence 2017, 2021,government effectiveness 2017, 2021,regulatory quality 2017, 2021,rule of law 2017,rule of law 2021,control of corruption 2017,control of corruption 2021,judicial effectiveness score 2018, 2022,government integrity score 2018, 2022,overall economic freedom score 2017, 2022,financial freedom score 2018, 2022,government expenditure (% of GDP) 2018, ,CO2e emissions per capita 2019,share of electricity from renewables generation 2015, 2020 or latest year, ,% of seats held by women in national parliaments 2017, 2018, 2021,Military Spending as % of GDP 2021,Military Spending as % of GDP 2019,Continent 
 indicator,ISO Country code,population,surface area (Km2),,GINI index,happy planet index,happy planet index,human development index,human development index,sustainable economic development assessment (SEDA),,"GDP growth
-(annual %)",,"GDP 
-($ USD billions PPP)",,,,GDP per capita in $ (PPP),,,,Economic Growth,,,"health expenditure 
-% of GDP",,,,,,,,,"health expenditure 
-per person",,,infant mortality,"maternal mortality per 100,000 live births",,"education expenditure
+(annual %)","GDP growth
+(annual %)","GDP 
+($ USD billions PPP)","GDP 
+($ USD billions PPP)","GDP 
+($ USD billions PPP)","GDP 
+($ USD billions PPP)",GDP per capita in $ (PPP),GDP per capita in $ (PPP),GDP per capita in $ (PPP),GDP per capita in $ (PPP),Economic Growth,Economic Growth,Economic Growth,"health expenditure 
+% of GDP","health expenditure 
+% of GDP","health expenditure 
+% of GDP","health expenditure 
+% of GDP","health expenditure 
+% of GDP","health expenditure 
+% of GDP","health expenditure 
+% of GDP","health expenditure 
+% of GDP","health expenditure 
+% of GDP","health expenditure 
+per person","health expenditure 
+per person","health expenditure 
+per person",infant mortality,"maternal mortality per 100,000 live births","maternal mortality per 100,000 live births","education expenditure
 % of GDP","education expenditure
 % of GDP","education expenditure
-% of GDP",Education as % of GDP,,% of primary school aged kids out of school,,,unemployment (%),,% of population in extreme poverty,% of population with access to electricity,,political rights score ,,civil liberties score ,,political stability & absence of violence,,government effectiveness,,regulatory quality,,rule of law,,control of corruption,,judicial effectiveness score,,government integrity score,,overall economic freedom score,,financial freedom score,,government expenditure (% of GDP),,CO2e emissions per capita,share of electricity from renewables generation,,,% of seats held by women in national parliaments,,,Military Spending as % of GDP,,Continent
+% of GDP",Education as % of GDP,Education as % of GDP,% of primary school aged kids out of school,% of primary school aged kids out of school,,unemployment (%),unemployment (%),% of population in extreme poverty,% of population with access to electricity,,political rights score ,,civil liberties score ,,political stability & absence of violence,,government effectiveness,,regulatory quality,,rule of law,rule of law,control of corruption,control of corruption,judicial effectiveness score,,government integrity score,,overall economic freedom score,,financial freedom score,,government expenditure (% of GDP),,CO2e emissions per capita,share of electricity from renewables generation,,,% of seats held by women in national parliaments,,,Military Spending as % of GDP,Military Spending as % of GDP,Continent
 source,FAO,World Bank Data,CIA World Factbook,,CIA World Factbook,Happy Planet Index,,UNDP,,Boston Consulting Group (BCG),,,World Bank,World Bank,,,,World Bank,,,,WorldBank,WorldBank,,World Bank,,,,,,,,,World Bank,World Bank,,WorldBank,Worldbank,,World Bank,World Bank,World Bank,WorldBank,WorldBank,WorldBank,WorldBank,,Heritage Foundation,World Bank,WorldBank,WorldBank,,Freedom House,,Freedom House,,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,World Bank,Heritage Foundation,Heritage Foundation,Heritage Foundation,Heritage Foundation,Heritage Foundation,Heritage Foundation,Heritage Foundation,Heritage Foundation,Heritage Foundation,,WorldBank,EIA,EIA,,World Bank,WorldBank,WorldBank,SIPRI,SIPRI,
 URL,http://www.fao.org/countryprofiles/iso3list/en/,https://data.worldbank.org/indicator/SP.POP.TOTL,https://www.cia.gov/library/publications/the-world-factbook/fields/2147.html#al,,https://www.cia.gov/library/publications/the-world-factbook/rankorder/2172rank.html,http://happyplanetindex.org/,https://happyplanetindex.org/,http://hdr.undp.org/en/data#,https://hdr.undp.org/data-center/human-development-index#/indicies/HDI,https://www.bcg.com/en-gb/publications/interactives/seda-2018-guide.aspx,,,https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG,https://data.worldbank.org/indicator/NY.GDP.MKTP.CD,,,,https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD,,,,https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG,https://data.worldbank.org/indicator/NY.GDP.MKTP.KD.ZG,,https://data.worldbank.org/indicator/SH.XPD.CHEX.GD.ZS,,,,,,,,,https://data.worldbank.org/indicator/SH.XPD.CHEX.PP.CD,https://data.worldbank.org/indicator/SH.XPD.CHEX.PC.CD,,https://data.worldbank.org/indicator/SP.DYN.IMRT.IN,https://data.worldbank.org/indicator/SH.STA.MMRT,,https://data.worldbank.org/indicator/SE.XPD.TOTL.GD.ZS?view=chart,https://data.worldbank.org/indicator/SE.XPD.TOTL.GD.ZS,https://data.worldbank.org/indicator/SE.XPD.TOTL.GD.ZS,https://data.worldbank.org/indicator/SE.XPD.TOTL.GD.ZS,https://data.worldbank.org/indicator/SE.XPD.TOTL.GD.ZS,https://data.worldbank.org/indicator/SE.PRM.UNER.ZS,https://data.worldbank.org/indicator/SE.PRM.UNER.ZS,,https://www.heritage.org/index/explore,https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS,https://data.worldbank.org/topic/poverty,https://data.worldbank.org/indicator/EG.ELC.ACCS.ZS,,https://freedomhouse.org/reports/publication-archives,https://freedomhouse.org/countries/freedom-world/scores,https://freedomhouse.org/reports/publication-archives,https://freedomhouse.org/countries/freedom-world/scores,http://info.worldbank.org/governance/wgi/#home,http://info.worldbank.org/governance/wgi/#home,http://info.worldbank.org/governance/wgi/#home,http://info.worldbank.org/governance/wgi/#home,http://info.worldbank.org/governance/wgi/#home,http://info.worldbank.org/governance/wgi/#home,http://info.worldbank.org/governance/wgi/#home,http://info.worldbank.org/governance/wgi/#home,http://info.worldbank.org/governance/wgi/#home,http://info.worldbank.org/governance/wgi/#home,https://www.heritage.org/index/explore,https://www.heritage.org/index/explore,https://www.heritage.org/index/explore,https://www.heritage.org/index/explore,https://www.heritage.org/index/explore,https://www.heritage.org/index/explore,https://www.heritage.org/index/explore,https://www.heritage.org/index/explore,https://www.heritage.org/index/explore,,https://data.worldbank.org/indicator/EN.ATM.CO2E.PC,https://www.eia.gov/international/data/world/electricity/electricity-generation?pd=2&p=0000000000000000000000000000098&u=1&f=A&v=column&a=-&i=none&vo=value&t=C&g=00000000000000000000000000000000000000000000000001&l=249-ruvvvvvfvtvnvv1vrvvvvfvvvvvvfvvvou20evvvvvvvvvvvvvvs&s=1420070400000&e=1577836800000&vb=146&ev=false,https://www.eia.gov/international/data/world/electricity/electricity-generation?pd=2&p=0000000000000000000000000000098&u=1&f=A&v=column&a=-&i=none&vo=value&t=C&g=00000000000000000000000000000000000000000000000001&l=249-ruvvvvvfvtvnvv1vrvvvvfvvvvvvfvvvou20evvvvvvvvvvvvvvs&s=1420070400000&e=1577836800000&vb=146&ev=false,,https://data.worldbank.org/indicator/SG.GEN.PARL.ZS,https://data.worldbank.org/indicator/SG.GEN.PARL.ZS,https://data.worldbank.org/indicator/SG.GEN.PARL.ZS,https://milex.sipri.org/sipri,,
 notes,,,,,inequality in the distribution of family income. Lower the better.,"well being + life expectancy + inequalities + ecological footprint  

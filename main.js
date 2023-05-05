@@ -62,6 +62,7 @@ let baselineLine;
 //Load coutnries
 d3.csv("countries.csv").then((data) => {
   // Clean the data
+  console.log(JSON.stringify(data, null, 2));
   cleanedData = data.map((row) => {
     var newRow = {};
     for (var key in row) {
@@ -70,8 +71,8 @@ d3.csv("countries.csv").then((data) => {
     }
     return newRow;
   });
-  yearedData = cleanedData
-  cleanedData = cleanedData.slice(4, 178);
+  yearedData = cleanedData;
+  cleanedData = cleanedData.slice(5, 178);
 
   // Call the populate functions to create the dropdowns
   populateCountrySelect(cleanedData);
@@ -84,13 +85,10 @@ d3.csv("countries.csv").then((data) => {
   //console.log(selectedCountry);
   var selectedMetricDropdown = document.getElementById("metricSelect");
   var selectedMetric = metricMapping[selectedMetricDropdown.value];
-
-  // Filter the data by the selected country
-  var filteredData = cleanedData.filter(
-    (row) => row.indicator === selectedCountry
-  );
-  //console.log(filteredData);
-
+  console.log(selectedMetric);
+  var metricYearKey =
+    metricMapping[selectedMetricDropdown.value] + " " + selectedYear.value;
+  console.log(JSON.stringify(cleanedData, null, 2));
   //Bonk
   countries = cleanedData.map(function (d) {
     //console.log(d)
@@ -99,17 +97,16 @@ d3.csv("countries.csv").then((data) => {
 
   //Y
   countrys = cleanedData.map(function (d) {
-  //  console.log(d[selectedMetric]);
-    return parseFloat(d[selectedMetric].replace(',',''));
+    //  console.log(d[selectedMetric]);
+    return parseFloat(d[metricYearKey].replace(",", ""));
   });
 
   //Set domain for the x scale
   xScale.domain(countries).range([0, width]);
 
-// Set the domain for the y scales based on the selected metric
-
-    
-yScale.domain([0, d3.max(countrys)]).range([ height, 0]);
+  // Set the domain for the y scales based on the selected metric
+  console.log(JSON.stringify(countries, null, 2));
+  yScale.domain([0, d3.max(countrys)]).range([height, 0]);
 
   // Create the x and y axis
   // Create the x and y axis
@@ -125,29 +122,28 @@ yScale.domain([0, d3.max(countrys)]).range([ height, 0]);
     .attr("transform", "rotate(-65)"); // <- Add this line
 
   svg.append("g").attr("class", "y-axis").call(yAxis);
-    
-//console.log(cleanedData)
 
-// Create the bars
-var bar = svg
-  .selectAll("rect")
-  .data(cleanedData)
-  .enter()
-  .append("rect")
-  .attr("x", (d) => xScale(d.indicator))
-  .attr("y", (d) => yScale(d[selectedMetric]))
-  .attr("width", xScale.bandwidth())
-  .attr("height", (d) => checkNaN(height - yScale(d[selectedMetric])))
-  .attr("fill", "steelblue");
-    
-bar.append("text")
-    .text(function(d) { return d.indicator; })
-    
+  //console.log(cleanedData)
+
+  // Create the bars
+  var bar = svg
+    .selectAll("rect")
+    .data(cleanedData)
+    .enter()
+    .append("rect")
+    .attr("x", (d) => xScale(d.indicator))
+    .attr("y", (d) => yScale(d[metricYearKey]))
+    .attr("width", xScale.bandwidth())
+    .attr("height", (d) => checkNaN(height - yScale(d[metricYearKey])))
+    .attr("fill", "steelblue");
+
+  bar.append("text").text(function (d) {
+    return d.indicator;
+  });
 
   updateLabels();
-addBaselineLine(selectedCountry, selectedMetric);
-    updateChart();
- 
+  addBaselineLine(selectedCountry, metricYearKey);
+  updateChart();
 });
 
 function populateCountrySelect(data) {
@@ -199,7 +195,7 @@ function populateYearSelect(data) {
   });
 
   // Add event listener to update the chart when the country is changed
-  metricSelect.addEventListener("change", updateChart);
+  yearSelect.addEventListener("change", updateChart);
 }
 
 function populateMetricSelect(data) {
@@ -228,11 +224,11 @@ function populateMetricSelect(data) {
 }
 
 function checkNaN(x) {
-    if(isNaN(x)) {
-        return 0;
-    } 
-    
-    return x;
+  if (isNaN(x)) {
+    return 0;
+  }
+
+  return x;
 }
 
 function updateChart() {
@@ -240,37 +236,39 @@ function updateChart() {
   var selectedCountry = document.getElementById("countrySelect").value;
   var selectedMetricDropdown = document.getElementById("metricSelect");
   var selectedMetric = metricMapping[selectedMetricDropdown.value];
+  var selectedYear = document.getElementById("yearSelect").value;
+  var metricYearKey = selectedMetric + " " + selectedYear;
 
   populateYearSelect(cleanedData);
-  var selectedYear = document.getElementById("yearSelect").value;
 
   if (!selectedMetric) {
     return;
   }
 
   // Filter the data based on the selected metric
-    
-//console.log(cleanedData)    
+
   var filteredData = cleanedData.map((row) => {
-    return { indicator: row.indicator, value:
-       parseFloat(row[selectedMetric].replace(',','')) };
+    return {
+      indicator: row.indicator,
+      value: parseFloat(row[metricYearKey].replace(",", "")),
+    };
   });
-    
 
   // Update the yScale domain based on the new metric
-  yScale.domain([0,
-    d3.max(filteredData, function (d) {
-      return d.value;
-    }),
-  ])
-    .range([ height, 0]);
+  yScale
+    .domain([
+      0,
+      d3.max(filteredData, function (d) {
+        return d.value;
+      }),
+    ])
+    .range([height, 0]);
 
   // Update the x and y axis
   svg.select(".x-axis").transition().duration(500).call(xAxis);
   svg.select(".y-axis").transition().duration(500).call(yAxis);
 
-    
-console.log(filteredData)
+  console.log(filteredData);
   // Update the bars
   var bars = svg.selectAll("rect").data(filteredData);
   bars
@@ -280,20 +278,15 @@ console.log(filteredData)
     .attr("x", (d) => xScale(d.indicator))
     .attr("y", (d) => yScale(d.value))
     .attr("width", xScale.bandwidth())
-    .attr("height", (d) =>  
-    checkNaN(height - yScale(d.value)))
+    .attr("height", (d) => checkNaN(height - yScale(d.value)))
     .attr("fill", "steelblue");
-    
 
   // Update the labels
   updateLabels();
 
   // Add or update the baseline line
-  addBaselineLine(selectedCountry, selectedMetric);
-
+  addBaselineLine(selectedCountry, metricYearKey);
 }
-
-
 
 function updateLabels() {
   var selectedMetric = document.getElementById("metricSelect").value;
@@ -311,24 +304,25 @@ function updateLabels() {
 }
 
 function addBaselineLine(country, metric) {
-//  if (metric != "GDP  ($ USD billions PPP)") {
-//    metric = metricMapping[metric];
-//  }
+  //  if (metric != "GDP  ($ USD billions PPP)") {
+  //    metric = metricMapping[metric];
+  //  }
 
   // Find the baseline value for the selected country and metric
   //console.log(JSON.stringify(cleanedData, null, 2));
   // console.log("Here is the country and metric printed: " + country + "and the metric " + metric +"");
   const baselineRow = cleanedData.find((row) => row.indicator == country);
+  console.log(metric);
   const baselineValue = baselineRow ? parseFloat(baselineRow[metric]) : 0;
 
-  // Remove any existing baseline line 
+  // Remove any existing baseline line
   if (baselineLine) {
     baselineLine.remove();
   }
-    
-    if (isNaN(baselineValue)) {
+
+  if (isNaN(baselineValue)) {
     baselineValue.remove();
-}
+  }
 
   // Add a new horizontal red dotted line for the baseline value
   baselineLine = svg
