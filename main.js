@@ -81,7 +81,7 @@ d3.csv("countries.csv").then((data) => {
   // Get the selected country and metric from the dropdowns
   var selectedCountry = document.getElementById("countrySelect");
   var selectedYear = document.getElementById("yearSelect");
-  console.log(selectedCountry);
+  //console.log(selectedCountry);
   var selectedMetricDropdown = document.getElementById("metricSelect");
   var selectedMetric = metricMapping[selectedMetricDropdown.value];
 
@@ -89,7 +89,7 @@ d3.csv("countries.csv").then((data) => {
   var filteredData = cleanedData.filter(
     (row) => row.indicator === selectedCountry
   );
-  console.log(filteredData);
+  //console.log(filteredData);
 
   //Bonk
   countries = cleanedData.map(function (d) {
@@ -99,15 +99,17 @@ d3.csv("countries.csv").then((data) => {
 
   //Y
   countrys = cleanedData.map(function (d) {
-    console.log(d[selectedMetric]);
-    return d[selectedMetric];
+  //  console.log(d[selectedMetric]);
+    return parseFloat(d[selectedMetric].replace(',',''));
   });
 
   //Set domain for the x scale
   xScale.domain(countries).range([0, width]);
 
 // Set the domain for the y scales based on the selected metric
-yScale.domain([0, d3.max(countrys)]).range([height, 0]);
+
+    
+yScale.domain([0, d3.max(countrys)]).range([ height, 0]);
 
   // Create the x and y axis
   // Create the x and y axis
@@ -123,9 +125,11 @@ yScale.domain([0, d3.max(countrys)]).range([height, 0]);
     .attr("transform", "rotate(-65)"); // <- Add this line
 
   svg.append("g").attr("class", "y-axis").call(yAxis);
+    
+//console.log(cleanedData)
 
 // Create the bars
-svg
+var bar = svg
   .selectAll("rect")
   .data(cleanedData)
   .enter()
@@ -133,11 +137,17 @@ svg
   .attr("x", (d) => xScale(d.indicator))
   .attr("y", (d) => yScale(d[selectedMetric]))
   .attr("width", xScale.bandwidth())
-  .attr("height", (d) => height - yScale(d[selectedMetric]))
+  .attr("height", (d) => checkNaN(height - yScale(d[selectedMetric])))
   .attr("fill", "steelblue");
+    
+bar.append("text")
+    .text(function(d) { return d.indicator; })
+    
 
   updateLabels();
-  addBaselineLine(selectedCountry, selectedMetric);
+addBaselineLine(selectedCountry, selectedMetric);
+    updateChart();
+ 
 });
 
 function populateCountrySelect(data) {
@@ -217,6 +227,14 @@ function populateMetricSelect(data) {
   metricSelect.addEventListener("change", updateChart);
 }
 
+function checkNaN(x) {
+    if(isNaN(x)) {
+        return 0;
+    } 
+    
+    return x;
+}
+
 function updateChart() {
   // Get the selected country and metric from the dropdowns
   var selectedCountry = document.getElementById("countrySelect").value;
@@ -231,22 +249,28 @@ function updateChart() {
   }
 
   // Filter the data based on the selected metric
+    
+//console.log(cleanedData)    
   var filteredData = cleanedData.map((row) => {
-    return { indicator: row.indicator, value: parseFloat(row[selectedMetric]) };
+    return { indicator: row.indicator, value:
+       parseFloat(row[selectedMetric].replace(',','')) };
   });
+    
 
   // Update the yScale domain based on the new metric
-  yScale.domain([
-    0,
+  yScale.domain([0,
     d3.max(filteredData, function (d) {
       return d.value;
     }),
-  ]);
+  ])
+    .range([ height, 0]);
 
   // Update the x and y axis
   svg.select(".x-axis").transition().duration(500).call(xAxis);
   svg.select(".y-axis").transition().duration(500).call(yAxis);
 
+    
+console.log(filteredData)
   // Update the bars
   var bars = svg.selectAll("rect").data(filteredData);
   bars
@@ -256,14 +280,17 @@ function updateChart() {
     .attr("x", (d) => xScale(d.indicator))
     .attr("y", (d) => yScale(d.value))
     .attr("width", xScale.bandwidth())
-    .attr("height", (d) => height - yScale(d.value))
+    .attr("height", (d) =>  
+    checkNaN(height - yScale(d.value)))
     .attr("fill", "steelblue");
+    
 
   // Update the labels
   updateLabels();
 
   // Add or update the baseline line
   addBaselineLine(selectedCountry, selectedMetric);
+
 }
 
 
@@ -284,20 +311,24 @@ function updateLabels() {
 }
 
 function addBaselineLine(country, metric) {
-  if (metric != "GDP  ($ USD billions PPP)") {
-    metric = metricMapping[metric];
-  }
+//  if (metric != "GDP  ($ USD billions PPP)") {
+//    metric = metricMapping[metric];
+//  }
 
   // Find the baseline value for the selected country and metric
   //console.log(JSON.stringify(cleanedData, null, 2));
   // console.log("Here is the country and metric printed: " + country + "and the metric " + metric +"");
   const baselineRow = cleanedData.find((row) => row.indicator == country);
-  const baselineValue = baselineRow ? baselineRow[metric] : 0;
+  const baselineValue = baselineRow ? parseFloat(baselineRow[metric]) : 0;
 
-  // Remove any existing baseline line
+  // Remove any existing baseline line 
   if (baselineLine) {
     baselineLine.remove();
   }
+    
+    if (isNaN(baselineValue)) {
+    baselineValue.remove();
+}
 
   // Add a new horizontal red dotted line for the baseline value
   baselineLine = svg
