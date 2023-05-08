@@ -1,6 +1,6 @@
 // Set the dimensions of the canvas
 var margin = { top: 20, right: 20, bottom: 70, left: 40 };
-var width = 2200 - margin.left - margin.right;
+var width = 2000 - margin.left - margin.right;
 var height = 600 - margin.top - margin.bottom;
 
 //Mapping for HTML

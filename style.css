@@ -1,4 +1,36 @@
-#visualization svg{
-
-
+#headers{
+    text-align:center;
+    height:10%;
 }
+
+
+#container{
+    
+    border:1px solid #373746;
+    width:95%;
+    top:15%;
+    position:fixed;
+    left:2.5%;
+    overflow:scroll;
+    height:82.5%;
+}
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    height:10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #373746;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #378eff;
+  }
