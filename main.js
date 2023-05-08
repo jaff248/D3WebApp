@@ -13,17 +13,10 @@ var metricMapping = {
   unemployment: "unemployment (%)",
 };
 
-// Create the svg canvas
+// GRAPH 1 -- BAR GRAPH
+// Create the svg canvas for graph 1
 var svg1 = d3
   .select("#visualization1")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var svg2 = d3
-  .select("#visualization2")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
@@ -36,46 +29,55 @@ var xScale = d3.scaleBand().domain([0, width]).padding(0.1);
 var yScale = d3.scaleLinear().range([height, 0]);
 
 // Set the x and y axis
-var xAxis = d3.axisBottom(xScale); // Remove outer ticks
-var yAxis = d3.axisLeft(yScale);
+var xAxis1 = d3.axisBottom(xScale); // Remove outer ticks
+var yAxis1 = d3.axisLeft(yScale);
 
 //Labels
-// GRAPH 1 Add labels for x-axis, y-axis, and title this is the country label, then Y label, then title for graph
-var xAxisLabel = svg1
+var xAxisLabel1 = svg1
   .append("text")
   .attr("x", width / 2)
   .attr("y", height + margin.bottom)
   .style("text-anchor", "middle")
   .attr("class", "axis-label");
-var yAxisLabel = svg1
+var yAxisLabel1 = svg1
   .append("text")
   .attr("x", -height / 2)
   .attr("y", -margin.left / 1.5)
   .attr("transform", "rotate(-90)")
   .style("text-anchor", "middle")
   .attr("class", "axis-label");
-var titleLabel = svg1
+var titleLabel1 = svg1
   .append("text")
   .attr("x", width / 2)
   .attr("y", -margin.top / 2)
   .style("text-anchor", "middle")
   .attr("class", "title-label");
 
+// GRAPH 2 -- STACKED BAR GRAPH
+var svg2 = d3
+  .select("#visualization2")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+var xAxis2 = d3.axisBottom(xScale); // Remove outer ticks
+var yAxis2 = d3.axisLeft(yScale);
 // GRAPH 2 Add labels for x-axis, y-axis, and title this is the country label, then Y label, then title for graph
-var xAxisLabel = svg2
+var xAxisLabel2 = svg2
   .append("text")
   .attr("x", width / 2)
   .attr("y", height + margin.bottom)
   .style("text-anchor", "middle")
   .attr("class", "axis-label");
-var yAxisLabel = svg2
+var yAxisLabel2 = svg2
   .append("text")
   .attr("x", -height / 2)
   .attr("y", -margin.left / 1.5)
   .attr("transform", "rotate(-90)")
   .style("text-anchor", "middle")
   .attr("class", "axis-label");
-var titleLabel = svg2
+var titleLabel2 = svg2
   .append("text")
   .attr("x", width / 2)
   .attr("y", -margin.top / 2)
@@ -87,6 +89,7 @@ let yearedData;
 let cleanedData;
 let baselineLine;
 
+// BEGIN DEFINING FUNCTIONS
 //Load coutnries
 d3.csv("countries.csv").then((data) => {
   // Clean the data
@@ -142,14 +145,14 @@ d3.csv("countries.csv").then((data) => {
     .append("g")
     .attr("class", "x-axis")
     .attr("transform", "translate(0," + height + ")")
-    .call(xAxis)
+    .call(xAxis1)
     .selectAll("text") // <- Add this line
     .style("text-anchor", "end") // <- Add this line
     .attr("dx", "-0.8em") // <- Add this line
     .attr("dy", "0.15em") // <- Add this line
     .attr("transform", "rotate(-65)"); // <- Add this line
 
-  svg1.append("g").attr("class", "y-axis").call(yAxis);
+  svg1.append("g").attr("class", "y-axis").call(yAxis1);
 
   //console.log(cleanedData)
 
@@ -296,8 +299,8 @@ function updateChart() {
     .range([height, 0]);
 
   // Update the x and y axis
-  svg1.select(".x-axis").transition().duration(500).call(xAxis);
-  svg1.select(".y-axis").transition().duration(500).call(yAxis);
+  svg1.select(".x-axis").transition().duration(500).call(xAxis1);
+  svg1.select(".y-axis").transition().duration(500).call(yAxis1);
 
   console.log(filteredData);
   // Update the bars
@@ -341,9 +344,14 @@ function updateLabels() {
     2021: "2021",
     "2021 or latest": "2021 or latest",
   };
-  xAxisLabel.text("Countries");
-  yAxisLabel.text(metricLabel[selectedMetric]);
-  titleLabel.text(
+  xAxisLabel1.text("Countries");
+  yAxisLabel1.text(metricLabel[selectedMetric]);
+  titleLabel1.text(
+    `Comparison of ${metricLabel[selectedMetric]} ${yearLabel[selectedYear]}`
+  );
+  xAxisLabel2.text("Countries");
+  yAxisLabel2.text(metricLabel[selectedMetric]);
+  titleLabel2.text(
     `Comparison of ${metricLabel[selectedMetric]} ${yearLabel[selectedYear]}`
   );
 }
