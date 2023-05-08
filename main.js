@@ -507,7 +507,7 @@ function updateLabels() {
   titleLabel1.text(
     `Comparison of ${metricLabel[selectedMetric]} ${yearLabel[selectedYear]}`
   );
-  xAxisLabel2.text("Countries");
+  xAxisLabel2.text("Years");
   yAxisLabel2.text(metricLabel[selectedMetric]);
   titleLabel2.text(
     `Comparison of ${metricLabel[selectedMetric]} Over All Available Years`
