@@ -33,6 +33,27 @@ var metricMapping = {
   unemployment: "unemployment (%)",
 };
 
+var years = {
+    gdp: ["2018", "2019", "2020", "2021"],
+    gdp_per_capita: ["2018", "2019", "2020", "2021"],
+    health_expenditure: [
+      "2014",
+      "2015",
+      "2016",
+      "2017",
+      "2018",
+      "2019",
+      "2020",
+      "2021",
+      "2021 or latest",
+    ],
+    health_expenditure_per_person: ["2015", "2018", "2019"],
+    military_spending: ["2019", "2021"],
+    unemployment: ["2018", "2021"],
+  };
+
+
+
 // GRAPH 1 -- BAR GRAPH
 // Create the svg canvas for graph 1
 var svg1 = d3
@@ -44,13 +65,17 @@ var svg1 = d3
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 // Set the x and y scales
-var xScale = d3.scaleBand().domain([0, width]).padding(0.1);
+var xScale1 = d3.scaleBand().domain([0, width]).padding(0.1);
 //Linear
-var yScale = d3.scaleLinear().range([height, 0]);
+var yScale1 = d3.scaleLinear().range([height, 0]);
+
+var xScale2 = d3.scaleBand().domain([0, width]).padding(0.1);
+//Linear
+var yScale2 = d3.scaleLinear().range([height, 0]);
 
 // Set the x and y axis
-var xAxis1 = d3.axisBottom(xScale); // Remove outer ticks
-var yAxis1 = d3.axisLeft(yScale);
+var xAxis1 = d3.axisBottom(xScale1); // Remove outer ticks
+var yAxis1 = d3.axisLeft(yScale1);
 
 //Labels
 var xAxisLabel1 = svg1
@@ -81,8 +106,8 @@ var svg2 = d3
   .attr("height", height + margin.top + margin.bottom)
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-var xAxis2 = d3.axisBottom(xScale); // Remove outer ticks
-var yAxis2 = d3.axisLeft(yScale);
+var xAxis2 = d3.axisBottom(xScale2); // Remove outer ticks
+var yAxis2 = d3.axisLeft(yScale2);
 // GRAPH 2 Add labels for x-axis, y-axis, and title this is the country label, then Y label, then title for graph
 var xAxisLabel2 = svg2
   .append("text")
@@ -153,11 +178,11 @@ d3.csv("countries.csv").then((data) => {
   });
 
   //Set domain for the x scale
-  xScale.domain(countries).range([0, width]);
+  xScale1.domain(countries).range([0, width]);
 
   // Set the domain for the y scales based on the selected metric
   console.log(JSON.stringify(countries, null, 2));
-  yScale.domain([0, d3.max(countrys)]).range([height, 0]);
+  yScale1.domain([0, d3.max(countrys)]).range([height, 0]);
 
   // Create the x and y axis
   // Create the x and y axis
@@ -182,15 +207,27 @@ d3.csv("countries.csv").then((data) => {
     .data(cleanedData)
     .enter()
     .append("rect")
-    .attr("x", (d) => xScale(d.indicator))
-    .attr("y", (d) => yScale(d[metricYearKey]))
-    .attr("width", xScale.bandwidth())
-    .attr("height", (d) => checkNaN(height - yScale(d[metricYearKey])))
+    .attr("x", (d) => xScale1(d.indicator))
+    .attr("y", (d) => yScale1(d[metricYearKey]))
+    .attr("width", xScale1.bandwidth())
+    .attr("height", (d) => checkNaN(height - yScale1(d[metricYearKey])))
     .attr("fill", "steelblue");
 
   bar.append("text").text(function (d) {
     return d.indicator;
   });
+    
+xScale2.domain(years[selectedMetricDropdown.value]).range([0, width]);
+    yScale2.domain([0, d3.max(countrys)]).range([height, 0]);
+    
+    svg2
+    .append("g")
+    .attr("class", "x-axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis2)
+
+
+  svg2.append("g").attr("class", "y-axis").call(yAxis2);
 
   updateLabels();
   addBaselineLine(selectedCountry, metricYearKey);
@@ -309,7 +346,7 @@ function updateChart() {
   });
 
   // Update the yScale domain based on the new metric
-  yScale
+  yScale1
     .domain([
       0,
       d3.max(filteredData, function (d) {
@@ -321,6 +358,9 @@ function updateChart() {
   // Update the x and y axis
   svg1.select(".x-axis").transition().duration(500).call(xAxis1);
   svg1.select(".y-axis").transition().duration(500).call(yAxis1);
+    
+xScale2.domain(years[selectedMetricDropdown.value]).range([0, width]);
+    svg2.select(".x-axis").transition().duration(500).call(xAxis2);
 
   console.log(filteredData);
   // Update the bars
@@ -329,10 +369,10 @@ function updateChart() {
     .join("rect")
     .transition()
     .duration(500)
-    .attr("x", (d) => xScale(d.indicator))
-    .attr("y", (d) => yScale(d.value))
-    .attr("width", xScale.bandwidth())
-    .attr("height", (d) => checkNaN(height - yScale(d.value)))
+    .attr("x", (d) => xScale1(d.indicator))
+    .attr("y", (d) => yScale1(d.value))
+    .attr("width", xScale1.bandwidth())
+    .attr("height", (d) => checkNaN(height - yScale1(d.value)))
     .attr("fill", "steelblue");
 
   // Update the labels
@@ -401,9 +441,9 @@ function addBaselineLine(country, metric) {
   baselineLine = svg1
     .append("line")
     .attr("x1", 0)
-    .attr("y1", yScale(baselineValue))
+    .attr("y1", yScale1(baselineValue))
     .attr("x2", width)
-    .attr("y2", yScale(baselineValue))
+    .attr("y2", yScale1(baselineValue))
     .attr("stroke", "red")
     .attr("stroke-dasharray", "5,5")
     .attr("stroke-width", 1);
