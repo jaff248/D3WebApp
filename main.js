@@ -136,9 +136,27 @@ d3.csv("countries.csv").then((data) => {
   //console.log(selectedCountry);
   var selectedMetricDropdown = document.getElementById("metricSelect");
   var selectedMetric = metricMapping[selectedMetricDropdown.value];
-  console.log(selectedMetric);
   var metricYearKey =
     metricMapping[selectedMetricDropdown.value] + " " + selectedYear.value;
+  cleanedData = cleanedData.sort(function (a, b) {
+    var keyA = a[metricYearKey],
+      keyB = b[metricYearKey];
+    if (keyA == null && keyB == null) {
+      return 0;
+    }
+    if (keyA == null) {
+      return -1;
+    }
+    if (keyB == null) {
+      return 1;
+    }
+    // Compare the 2 dates
+    if (keyA < keyB) return 1;
+    else if (keyA > keyB) return -1;
+    else {
+      return 0;
+    }
+  });
   console.log(JSON.stringify(cleanedData, null, 2));
   //Bonk
   countries = cleanedData.map(function (d) {
@@ -173,8 +191,6 @@ d3.csv("countries.csv").then((data) => {
     .attr("transform", "rotate(-65)"); // <- Add this line
 
   svg1.append("g").attr("class", "y-axis").call(yAxis1);
-
-  //console.log(cleanedData)
 
   // Create the bars
   var bar = svg1
@@ -302,12 +318,47 @@ function updateChart() {
   // Filter the data based on the selected metric
 
   var filteredData = cleanedData.map((row) => {
+    var value = parseFloat(row[metricYearKey].replace(",", ""));
+    if (value > 0) {
+      return {
+        indicator: row.indicator,
+        value: value,
+      };
+    }
     return {
       indicator: row.indicator,
-      value: parseFloat(row[metricYearKey].replace(",", "")),
+      value: 0,
     };
   });
+  filteredData = filteredData.sort(function (a, b) {
+    var keyA = a["value"],
+      keyB = b["value"];
+    if (keyA === null && keyB === null) {
+      return 0;
+    }
+    if (keyA === null || keyB === null) {
+      console.log(keyA);
+      console.log(keyB);
+    }
+    if (keyA === null) {
+      return 1;
+    }
+    if (keyB === null) {
+      return -1;
+    }
+    // Compare the 2 dates
+    if (keyA < keyB) return 1;
+    else if (keyA > keyB) return -1;
+    else {
+      return 0;
+    }
+  });
+  countries = filteredData.map(function (d) {
+    return d.indicator;
+  });
+  console.log(JSON.stringify(filteredData, null, 2));
 
+  xScale.domain(countries).range([0, width]);
   // Update the yScale domain based on the new metric
   yScale
     .domain([
@@ -322,13 +373,12 @@ function updateChart() {
   svg1.select(".x-axis").transition().duration(500).call(xAxis1);
   svg1.select(".y-axis").transition().duration(500).call(yAxis1);
 
-  console.log(filteredData);
   // Update the bars
   var bars = svg1.selectAll("rect").data(filteredData);
   bars
     .join("rect")
     .transition()
-    .duration(500)
+    .duration(400)
     .attr("x", (d) => xScale(d.indicator))
     .attr("y", (d) => yScale(d.value))
     .attr("width", xScale.bandwidth())
