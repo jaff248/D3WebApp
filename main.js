@@ -1,5 +1,5 @@
 // Set the dimensions of the canvas
-var margin = { top: 20, right: 20, bottom: 70, left: 40 };
+var margin = { top: 50, right: 20, bottom: 70, left: 40 };
 var width = 2600 - margin.left - margin.right;
 var height = 1300 - margin.top - margin.bottom;
 
@@ -13,7 +13,7 @@ function set_size() {
     h = height;
     w = width;
   } else {
-    margin.left = 20;
+    margin.left = 40;
     w = current_width;
     h = w / default_ratio;
   }
