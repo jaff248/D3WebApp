@@ -221,6 +221,7 @@ function populateMetricSelect(data) {
 
   // Add event listener to update the chart when the metric is changed
   metricSelect.addEventListener("change", updateChart);
+  metricSelect.addEventListener("change", metricSelectEventListener);
 }
 
 function checkNaN(x) {
@@ -231,6 +232,11 @@ function checkNaN(x) {
   return x;
 }
 
+function metricSelectEventListener() {
+  populateYearSelect(cleanedData);
+  updateChart();
+}
+
 function updateChart() {
   // Get the selected country and metric from the dropdowns
   var selectedCountry = document.getElementById("countrySelect").value;
@@ -238,8 +244,6 @@ function updateChart() {
   var selectedMetric = metricMapping[selectedMetricDropdown.value];
   var selectedYear = document.getElementById("yearSelect").value;
   var metricYearKey = selectedMetric + " " + selectedYear;
-
-  populateYearSelect(cleanedData);
 
   if (!selectedMetric) {
     return;
@@ -298,9 +302,23 @@ function updateLabels() {
     military_spending: "Military Spending as % of GDP",
     unemployment: "Unemployment",
   };
+  var selectedYear = document.getElementById("yearSelect").value;
+  var yearLabel = {
+    2014: "2014",
+    2015: "2015",
+    2016: "2016",
+    2017: "2017",
+    2018: "2018",
+    2019: "2019",
+    2020: "2020",
+    2021: "2021",
+    "2021 or latest": "2021 or latest",
+  };
   xAxisLabel.text("Countries");
   yAxisLabel.text(metricLabel[selectedMetric]);
-  titleLabel.text(`Comparison of ${metricLabel[selectedMetric]}`);
+  titleLabel.text(
+    `Comparison of ${metricLabel[selectedMetric]} ${yearLabel[selectedYear]}`
+  );
 }
 
 function addBaselineLine(country, metric) {
