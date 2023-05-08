@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
     <title>Interactive Visualization System</title>
     <style>
         .inline-controls {
@@ -19,7 +20,7 @@
     <h1>Assignment 4 -     <h2> Interactive Visualization System </h2></h1>
 
     <p>Explore a dataset containing major economic, health, and wellbeing indicators for countries around the world.</p>
-
+    <div id = "container">
     <div class="inline-controls">
         <label for="countrySelect">
             <h2>Select Baseline Country</h2>
@@ -52,9 +53,15 @@
         </select>
     </div>
 
-    <div id="visualization">
+
+    <div id="visualization1">
         <!-- The visualization will be rendered here -->
-    </div>    
+    </div> 
+
+    <div id="visualization2">
+        <!-- The visualization will be rendered here -->
+    </div> 
+</div>   
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script src="./main.js"></script>
