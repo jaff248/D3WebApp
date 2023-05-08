@@ -426,10 +426,10 @@ xScale2.domain(years[selectedMetricDropdown.value]).range([0, width]);
     .attr("height", (d) => checkNaN(height - yScale1(d.value)))
 
     .duration(400)
-    .attr("x", (d) => xScale(d.indicator))
-    .attr("y", (d) => yScale(d.value))
-    .attr("width", xScale.bandwidth())
-    .attr("height", (d) => checkNaN(height - yScale(d.value)))
+    .attr("x", (d) => xScale1(d.indicator))
+    .attr("y", (d) => yScale1(d.value))
+    .attr("width", xScale1.bandwidth())
+    .attr("height", (d) => checkNaN(height - yScale1(d.value)))
 
     .attr("fill", "steelblue");
 
