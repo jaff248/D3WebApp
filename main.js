@@ -1,7 +1,7 @@
 // Set the dimensions of the canvas
 var margin = { top: 20, right: 20, bottom: 70, left: 40 };
-var width = 2400 - margin.left - margin.right;
-var height = 1000 - margin.top - margin.bottom;
+var width = 2200 - margin.left - margin.right;
+var height = 600 - margin.top - margin.bottom;
 
 //Mapping for HTML
 var metricMapping = {
@@ -14,8 +14,16 @@ var metricMapping = {
 };
 
 // Create the svg canvas
-var svg = d3
-  .select("#visualization")
+var svg1 = d3
+  .select("#visualization1")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+var svg2 = d3
+  .select("#visualization2")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
@@ -32,22 +40,42 @@ var xAxis = d3.axisBottom(xScale); // Remove outer ticks
 var yAxis = d3.axisLeft(yScale);
 
 //Labels
-// Add labels for x-axis, y-axis, and title this is the country label, then Y label, then title for graph
-var xAxisLabel = svg
+// GRAPH 1 Add labels for x-axis, y-axis, and title this is the country label, then Y label, then title for graph
+var xAxisLabel = svg1
   .append("text")
   .attr("x", width / 2)
   .attr("y", height + margin.bottom)
   .style("text-anchor", "middle")
   .attr("class", "axis-label");
-var yAxisLabel = svg
+var yAxisLabel = svg1
   .append("text")
   .attr("x", -height / 2)
   .attr("y", -margin.left / 1.5)
   .attr("transform", "rotate(-90)")
   .style("text-anchor", "middle")
   .attr("class", "axis-label");
+var titleLabel = svg1
+  .append("text")
+  .attr("x", width / 2)
+  .attr("y", -margin.top / 2)
+  .style("text-anchor", "middle")
+  .attr("class", "title-label");
 
-var titleLabel = svg
+// GRAPH 2 Add labels for x-axis, y-axis, and title this is the country label, then Y label, then title for graph
+var xAxisLabel = svg2
+  .append("text")
+  .attr("x", width / 2)
+  .attr("y", height + margin.bottom)
+  .style("text-anchor", "middle")
+  .attr("class", "axis-label");
+var yAxisLabel = svg2
+  .append("text")
+  .attr("x", -height / 2)
+  .attr("y", -margin.left / 1.5)
+  .attr("transform", "rotate(-90)")
+  .style("text-anchor", "middle")
+  .attr("class", "axis-label");
+var titleLabel = svg2
   .append("text")
   .attr("x", width / 2)
   .attr("y", -margin.top / 2)
@@ -110,7 +138,7 @@ d3.csv("countries.csv").then((data) => {
 
   // Create the x and y axis
   // Create the x and y axis
-  svg
+  svg1
     .append("g")
     .attr("class", "x-axis")
     .attr("transform", "translate(0," + height + ")")
@@ -121,12 +149,12 @@ d3.csv("countries.csv").then((data) => {
     .attr("dy", "0.15em") // <- Add this line
     .attr("transform", "rotate(-65)"); // <- Add this line
 
-  svg.append("g").attr("class", "y-axis").call(yAxis);
+  svg1.append("g").attr("class", "y-axis").call(yAxis);
 
   //console.log(cleanedData)
 
   // Create the bars
-  var bar = svg
+  var bar = svg1
     .selectAll("rect")
     .data(cleanedData)
     .enter()
@@ -220,7 +248,6 @@ function populateMetricSelect(data) {
   });
 
   // Add event listener to update the chart when the metric is changed
-  metricSelect.addEventListener("change", updateChart);
   metricSelect.addEventListener("change", metricSelectEventListener);
 }
 
@@ -269,12 +296,12 @@ function updateChart() {
     .range([height, 0]);
 
   // Update the x and y axis
-  svg.select(".x-axis").transition().duration(500).call(xAxis);
-  svg.select(".y-axis").transition().duration(500).call(yAxis);
+  svg1.select(".x-axis").transition().duration(500).call(xAxis);
+  svg1.select(".y-axis").transition().duration(500).call(yAxis);
 
   console.log(filteredData);
   // Update the bars
-  var bars = svg.selectAll("rect").data(filteredData);
+  var bars = svg1.selectAll("rect").data(filteredData);
   bars
     .join("rect")
     .transition()
@@ -343,7 +370,7 @@ function addBaselineLine(country, metric) {
   }
 
   // Add a new horizontal red dotted line for the baseline value
-  baselineLine = svg
+  baselineLine = svg1
     .append("line")
     .attr("x1", 0)
     .attr("y1", yScale(baselineValue))
