@@ -1,7 +1,27 @@
 // Set the dimensions of the canvas
 var margin = { top: 20, right: 20, bottom: 70, left: 40 };
-var width = 2000 - margin.left - margin.right;
-var height = 600 - margin.top - margin.bottom;
+var width = 2600 - margin.left - margin.right;
+var height = 1300 - margin.top - margin.bottom;
+
+var default_ratio = width / height;
+
+function set_size() {
+  current_width = window.innerWidth;
+  current_height = window.innerHeight;
+  current_ratio = current_width / current_height;
+  if (current_ratio > default_ratio) {
+    h = height;
+    w = width;
+  } else {
+    margin.left = 20;
+    w = current_width;
+    h = w / default_ratio;
+  }
+  // Set new width and height taking margin into account
+  width = w - 50 - margin.right;
+  height = h - margin.top - margin.bottom;
+}
+set_size();
 
 //Mapping for HTML
 var metricMapping = {
