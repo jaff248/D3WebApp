@@ -352,7 +352,7 @@ function updateLabels() {
   xAxisLabel2.text("Countries");
   yAxisLabel2.text(metricLabel[selectedMetric]);
   titleLabel2.text(
-    `Comparison of ${metricLabel[selectedMetric]} ${yearLabel[selectedYear]}`
+    `Comparison of ${metricLabel[selectedMetric]} Over All Available Years`
   );
 }
 
