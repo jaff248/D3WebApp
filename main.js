@@ -1,5 +1,5 @@
 // Set the dimensions of the canvas
-var margin = { top: 50, right: 20, bottom: 70, left: 40 };
+var margin = { top: 50, right: 20, bottom: 70, left: 60 };
 var width = 2600 - margin.left - margin.right;
 var height = 1300 - margin.top - margin.bottom;
 
@@ -13,7 +13,7 @@ function set_size() {
     h = height;
     w = width;
   } else {
-    margin.left = 40;
+    margin.left = 60;
     w = current_width;
     h = w / default_ratio;
   }
@@ -34,25 +34,23 @@ var metricMapping = {
 };
 
 var years = {
-    gdp: ["2018", "2019", "2020", "2021"],
-    gdp_per_capita: ["2018", "2019", "2020", "2021"],
-    health_expenditure: [
-      "2014",
-      "2015",
-      "2016",
-      "2017",
-      "2018",
-      "2019",
-      "2020",
-      "2021",
-      "2021 or latest",
-    ],
-    health_expenditure_per_person: ["2015", "2018", "2019"],
-    military_spending: ["2019", "2021"],
-    unemployment: ["2018", "2021"],
-  };
-
-
+  gdp: ["2018", "2019", "2020", "2021"],
+  gdp_per_capita: ["2018", "2019", "2020", "2021"],
+  health_expenditure: [
+    "2014",
+    "2015",
+    "2016",
+    "2017",
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2021 or latest",
+  ],
+  health_expenditure_per_person: ["2015", "2018", "2019"],
+  military_spending: ["2019", "2021"],
+  unemployment: ["2018", "2021"],
+};
 
 // GRAPH 1 -- BAR GRAPH
 // Create the svg canvas for graph 1
@@ -138,7 +136,6 @@ let baselineLine;
 //Load coutnries
 d3.csv("countries.csv").then((data) => {
   // Clean the data
-  console.log(JSON.stringify(data, null, 2));
   cleanedData = data.map((row) => {
     var newRow = {};
     for (var key in row) {
@@ -148,7 +145,7 @@ d3.csv("countries.csv").then((data) => {
     return newRow;
   });
   yearedData = cleanedData;
-  cleanedData = cleanedData.slice(5, 178);
+  cleanedData = cleanedData.slice(5, 179);
 
   // Call the populate functions to create the dropdowns
   populateCountrySelect(cleanedData);
@@ -163,6 +160,11 @@ d3.csv("countries.csv").then((data) => {
   var selectedMetric = metricMapping[selectedMetricDropdown.value];
   var metricYearKey =
     metricMapping[selectedMetricDropdown.value] + " " + selectedYear.value;
+
+  // Calculate total sum of the metric across all countries for each year.
+  // Results in object with sums corresponding to each year -> {2020: 49302459, 2021: 3452345...etc}
+
+  // Sort data to produce a readable bar chart
   cleanedData = cleanedData.sort(function (a, b) {
     var keyA = a[metricYearKey],
       keyB = b[metricYearKey];
@@ -182,7 +184,6 @@ d3.csv("countries.csv").then((data) => {
       return 0;
     }
   });
-  console.log(JSON.stringify(cleanedData, null, 2));
   //Bonk
   countries = cleanedData.map(function (d) {
     //console.log(d)
@@ -199,7 +200,6 @@ d3.csv("countries.csv").then((data) => {
   xScale1.domain(countries).range([0, width]);
 
   // Set the domain for the y scales based on the selected metric
-  console.log(JSON.stringify(countries, null, 2));
   yScale1.domain([0, d3.max(countrys)]).range([height, 0]);
 
   // Create the x and y axis
@@ -232,16 +232,17 @@ d3.csv("countries.csv").then((data) => {
   bar.append("text").text(function (d) {
     return d.indicator;
   });
-    
-xScale2.domain(years[selectedMetricDropdown.value]).range([0, width]);
-    yScale2.domain([0, d3.max(countrys)]).range([height, 0]);
-    
-    svg2
+
+  // Set up axis for graph 2
+  yearlySums = calculateSums(selectedMetricDropdown.value, metricMapping);
+  console.log("MAX is :" + d3.max(Object.values(yearlySums)));
+  xScale2.domain(years[selectedMetricDropdown.value]).range([0, width]);
+  yScale2.domain([0, d3.max(Object.values(yearlySums))]).range([height, 0]);
+  svg2
     .append("g")
     .attr("class", "x-axis")
     .attr("transform", "translate(0," + height + ")")
-    .call(xAxis2)
-
+    .call(xAxis2);
 
   svg2.append("g").attr("class", "y-axis").call(yAxis2);
 
@@ -265,10 +266,8 @@ function populateCountrySelect(data) {
   countrySelect.addEventListener("change", updateChart);
 }
 
-function populateYearSelect(data) {
-  const yearSelect = document.getElementById("yearSelect");
-  const selectedMetric = document.getElementById("metricSelect").value;
-  const years = {
+function getYears() {
+  return (years = {
     gdp: [2018, 2019, 2020, 2021],
     gdp_per_capita: [2018, 2019, 2020, 2021],
     health_expenditure: [
@@ -285,7 +284,32 @@ function populateYearSelect(data) {
     health_expenditure_per_person: [2015, 2018, 2019],
     military_spending: [2019, 2021],
     unemployment: [2018, 2021],
-  };
+  });
+}
+
+function calculateSums(metric) {
+  var years = getYears();
+  var yearlySums = {};
+  cleanedData.map(function (d) {
+    years[metric].forEach((year) => {
+      let metricYear = metricMapping[metric] + " " + year;
+      if (!(year in yearlySums)) {
+        yearlySums[year] = 0;
+      }
+      if (parseFloat(d[metricYear])) {
+        yearlySums[year] =
+          parseFloat(yearlySums[year]) +
+          parseFloat(d[metricYear].replace(",", ""));
+      }
+    });
+  });
+  return yearlySums;
+}
+
+function populateYearSelect(data) {
+  const yearSelect = document.getElementById("yearSelect");
+  const selectedMetric = document.getElementById("metricSelect").value;
+  const years = getYears();
 
   while (yearSelect.firstChild) {
     yearSelect.removeChild(yearSelect.firstChild);
@@ -373,10 +397,6 @@ function updateChart() {
     if (keyA === null && keyB === null) {
       return 0;
     }
-    if (keyA === null || keyB === null) {
-      console.log(keyA);
-      console.log(keyB);
-    }
     if (keyA === null) {
       return 1;
     }
@@ -393,49 +413,59 @@ function updateChart() {
   countries = filteredData.map(function (d) {
     return d.indicator;
   });
-  console.log(JSON.stringify(filteredData, null, 2));
 
   xScale1.domain(countries).range([0, width]);
-  
+
   //added below
-var gdpYears = [2018, 2019, 2020, 2021]
-var gdpPerCapYears = [2018, 2019, 2020, 2021]
-var healthExpYears = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, "2021 or latest"]
-var healthExpPPYears = [2015, 2018, 2019]
-var militaryYears = [2019, 2021]
-var unemploymentYears = [2018, 2021]
+  var gdpYears = [2018, 2019, 2020, 2021];
+  var gdpPerCapYears = [2018, 2019, 2020, 2021];
+  var healthExpYears = [
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    "2021 or latest",
+  ];
+  var healthExpPPYears = [2015, 2018, 2019];
+  var militaryYears = [2019, 2021];
+  var unemploymentYears = [2018, 2021];
 
-var generatedSet = {}
-var yearsUsed;
-console.log(selectedMetric)
-if(selectedMetric == "GDP  ($ USD billions PPP)"){
-  yearsUsed = [...gdpYears];
-} else if (selectedMetric == "GDP per capita in $ (PPP)") {
-  yearsUsed = [...gdpPerCapYears];
-} else if (selectedMetric == "health expenditure  % of GDP") {
-  yearsUsed = [...healthExpYears];
-} else if (selectedMetric == "health expenditure  per person" ) {
-  yearsUsed = [...healthExpPPYears];
-} else if (selectedMetric == "Military Spending as % of GDP") {
-  yearsUsed = [...militaryYears];
-} else { //if selectedMetric == "unemployment (%)"
-  yearsUsed = [...unemploymentYears];
-  console.log("entered")
-}
-console.log(yearsUsed)
+  var generatedSet = {};
+  var yearsUsed;
+  console.log(selectedMetric);
+  if (selectedMetric == "GDP  ($ USD billions PPP)") {
+    yearsUsed = [...gdpYears];
+  } else if (selectedMetric == "GDP per capita in $ (PPP)") {
+    yearsUsed = [...gdpPerCapYears];
+  } else if (selectedMetric == "health expenditure  % of GDP") {
+    yearsUsed = [...healthExpYears];
+  } else if (selectedMetric == "health expenditure  per person") {
+    yearsUsed = [...healthExpPPYears];
+  } else if (selectedMetric == "Military Spending as % of GDP") {
+    yearsUsed = [...militaryYears];
+  } else {
+    //if selectedMetric == "unemployment (%)"
+    yearsUsed = [...unemploymentYears];
+    console.log("entered");
+  }
+  console.log(yearsUsed);
 
-yearsUsed.forEach(element => {
-  var metricYearKeyTest = selectedMetric + " " + element;
-  yearValsAdd = cleanedData.map((row) => {
-    return {
-      indicator: row.indicator,
-      value: parseFloat(row[metricYearKeyTest].replace(",", "")),
-    };
+  yearsUsed.forEach((element) => {
+    var metricYearKeyTest = selectedMetric + " " + element;
+    yearValsAdd = cleanedData.map((row) => {
+      return {
+        indicator: row.indicator,
+        value: parseFloat(row[metricYearKeyTest].replace(",", "")),
+      };
+    });
+    generatedSet[element] = yearValsAdd;
   });
-  generatedSet[element]=(yearValsAdd)}
-  )
-  console.log(generatedSet)
-  
+  console.log(generatedSet);
+
   // Update the yScale domain based on the new metric
   yScale1
     .domain([
@@ -449,9 +479,14 @@ yearsUsed.forEach(element => {
   // Update the x and y axis
   svg1.select(".x-axis").transition().duration(500).call(xAxis1);
   svg1.select(".y-axis").transition().duration(500).call(yAxis1);
-    
-xScale2.domain(years[selectedMetricDropdown.value]).range([0, width]);
-    svg2.select(".x-axis").transition().duration(500).call(xAxis2);
+
+  // Update x scale and y scale for graph two as well based on metric
+  yearlySums = calculateSums(selectedMetricDropdown.value, metricMapping);
+  xScale2.domain(years[selectedMetricDropdown.value]).range([0, width]);
+  yScale2.domain([0, d3.max(Object.values(yearlySums))]).range([height, 0]);
+  console.log(d3.max(Object.values(yearlySums)));
+  svg2.select(".x-axis").transition().duration(500).call(xAxis2);
+  svg2.select(".y-axis").transition().duration(500).call(yAxis2);
 
   // Update the bars
   var bars = svg1.selectAll("rect").data(filteredData);
@@ -472,6 +507,7 @@ xScale2.domain(years[selectedMetricDropdown.value]).range([0, width]);
     .attr("height", (d) => checkNaN(height - yScale1(d.value)))
 
     .attr("fill", "steelblue");
+  // Update x and y axis for graph 2
 
   // Update the labels
   updateLabels();
@@ -479,6 +515,8 @@ xScale2.domain(years[selectedMetricDropdown.value]).range([0, width]);
   // Add or update the baseline line
   addBaselineLine(selectedCountry, metricYearKey);
 }
+
+function updateSecondChart() {}
 
 function updateLabels() {
   var selectedMetric = document.getElementById("metricSelect").value;
