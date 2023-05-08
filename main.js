@@ -396,6 +396,46 @@ function updateChart() {
   console.log(JSON.stringify(filteredData, null, 2));
 
   xScale1.domain(countries).range([0, width]);
+  
+  //added below
+var gdpYears = [2018, 2019, 2020, 2021]
+var gdpPerCapYears = [2018, 2019, 2020, 2021]
+var healthExpYears = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, "2021 or latest"]
+var healthExpPPYears = [2015, 2018, 2019]
+var militaryYears = [2019, 2021]
+var unemploymentYears = [2018, 2021]
+
+var generatedSet = {}
+var yearsUsed;
+console.log(selectedMetric)
+if(selectedMetric == "GDP  ($ USD billions PPP)"){
+  yearsUsed = [...gdpYears];
+} else if (selectedMetric == "GDP per capita in $ (PPP)") {
+  yearsUsed = [...gdpPerCapYears];
+} else if (selectedMetric == "health expenditure  % of GDP") {
+  yearsUsed = [...healthExpYears];
+} else if (selectedMetric == "health expenditure  per person" ) {
+  yearsUsed = [...healthExpPPYears];
+} else if (selectedMetric == "Military Spending as % of GDP") {
+  yearsUsed = [...militaryYears];
+} else { //if selectedMetric == "unemployment (%)"
+  yearsUsed = [...unemploymentYears];
+  console.log("entered")
+}
+console.log(yearsUsed)
+
+yearsUsed.forEach(element => {
+  var metricYearKeyTest = selectedMetric + " " + element;
+  yearValsAdd = cleanedData.map((row) => {
+    return {
+      indicator: row.indicator,
+      value: parseFloat(row[metricYearKeyTest].replace(",", "")),
+    };
+  });
+  generatedSet[element]=(yearValsAdd)}
+  )
+  console.log(generatedSet)
+  
   // Update the yScale domain based on the new metric
   yScale1
     .domain([
