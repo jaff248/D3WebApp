@@ -166,6 +166,12 @@ d3.csv("countries.csv").then((data) => {
   cleanedData = cleanedData.sort(function (a, b) {
     var keyA = a[metricYearKey],
       keyB = b[metricYearKey];
+    if (a.indicator == selectedCountry) {
+      return -1;
+    }
+    if (b.indicator == selectedCountry) {
+      return 1;
+    }
     if (keyA == null && keyB == null) {
       return 0;
     }
@@ -479,6 +485,12 @@ function updateChart() {
   filteredData = filteredData.sort(function (a, b) {
     var keyA = a["value"],
       keyB = b["value"];
+    if (a.indicator == selectedCountry) {
+      return -1;
+    }
+    if (b.indicator == selectedCountry) {
+      return 1;
+    }
     if (keyA === null && keyB === null) {
       return 0;
     }
