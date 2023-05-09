@@ -162,6 +162,8 @@ d3.csv("countries.csv").then((data) => {
 		//console.log(d)
 		return d.indicator;
 	});
+    
+    console.log(countries)
 
 	//Y
 	countrys = cleanedData.map(function (d) {
@@ -217,6 +219,84 @@ d3.csv("countries.csv").then((data) => {
 		.call(xAxis2);
 
 	svg2.append("g").attr("class", "y-axis").call(yAxis2);
+    
+    var gdpYears = [2018, 2019, 2020, 2021];
+	var gdpPerCapYears = [2018, 2019, 2020, 2021];
+	var healthExpYears = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, "2021 or latest"];
+	var healthExpPPYears = [2015, 2018, 2019];
+	var militaryYears = [2019, 2021];
+	var unemploymentYears = [2018, 2021];
+
+	var generatedSet = [];
+	var yearsUsed;
+	console.log(selectedMetric);
+	if (selectedMetric == "GDP  ($ USD billions PPP)") {
+		yearsUsed = [...gdpYears];
+	} else if (selectedMetric == "GDP per capita in $ (PPP)") {
+		yearsUsed = [...gdpPerCapYears];
+	} else if (selectedMetric == "health expenditure  % of GDP") {
+		yearsUsed = [...healthExpYears];
+	} else if (selectedMetric == "health expenditure  per person") {
+		yearsUsed = [...healthExpPPYears];
+	} else if (selectedMetric == "Military Spending as % of GDP") {
+		yearsUsed = [...militaryYears];
+	} else {
+		//if selectedMetric == "unemployment (%)"
+		yearsUsed = [...unemploymentYears];
+		console.log("entered");
+	}
+	console.log(yearsUsed);
+    
+    var places = []
+    
+    
+
+	var yearAddedTF = false;
+yearsUsed.forEach(element => {
+  var metricYearKeyTest = selectedMetric + " " + element;
+    yearValsAdd = {}
+  cleanedData.map((row) => {
+      if(yearAddedTF == false) {
+          yearAddedTF = true
+        yearValsAdd["year"] = element,
+        yearValsAdd[row.indicator] = checkNaN(parseFloat(row[metricYearKeyTest].replace(",", "")))//,
+        } else { yearValsAdd[row.indicator]=checkNaN(parseFloat(row[metricYearKeyTest].replace(",", "")))//,
+        //;
+    }
+      
+  });
+    yearAddedTF = false;
+  generatedSet.push(yearValsAdd)
+}
+  )
+    
+console.log(generatedSet)
+    
+    
+   var stackGen = d3.stack()
+  .keys(countries);
+    var stackedSeries = stackGen(generatedSet);
+    
+    
+    
+    
+    console.log(stackedSeries)
+    
+    var groups = svg2.selectAll("g.bars")
+      .data(stackedSeries)
+      .enter().append("g")
+      .attr("class", "bars")
+      .style("fill", "steelblue")
+      .style("stroke", "#000");
+  
+groups.selectAll('rect')
+  .data((d) => d)
+  .enter()
+      .append("rect")
+  .attr('width', 40)
+  .attr('y', (d) => yScale2(d[1]))
+  .attr('x', (d) => xScale2(d.data.year))
+  .attr('height', (d) => yScale2(d[0]) -  yScale2(d[1]));
 
 	updateLabels();
 	addBaselineLine(selectedCountry, metricYearKey);
@@ -408,6 +488,16 @@ yearsUsed.forEach(element => {
   )
     
 console.log(generatedSet)
+    
+    var dataset = d3.stack()(countries.map(function(x) {
+      return generatedSet.map(function(d) {
+        return {x: d.year, y: +d[x]};
+      });
+    }));
+    
+    
+    console.log(dataset)
+
 
 	// Update the yScale domain based on the new metric
 	yScale1
@@ -446,6 +536,32 @@ console.log(generatedSet)
 
 		.attr("fill", "steelblue");
 	// Update x and y axis for graph 2
+    
+    
+    var stackGen = d3.stack()
+  .keys(countries);
+    var stackedSeries = stackGen(generatedSet);
+    
+    
+    
+    
+    console.log(stackedSeries)
+    
+    var groups = svg2.selectAll("g.bars")
+      .data(stackedSeries)
+      .enter().append("g")
+      .attr("class", "bars")
+      .style("fill", "steelblue")
+      .style("stroke", "#000");
+  
+groups.selectAll('rect')
+  .data((d) => d)
+  .enter()
+      .append("rect")
+  .attr('width', 40)
+  .attr('y', (d) => yScale2(d[1]))
+  .attr('x', (d) => xScale2(d.data.year))
+  .attr('height', (d) => yScale2(d[0]) -  yScale2(d[1]));
 
 	// Update the labels
 	updateLabels();
