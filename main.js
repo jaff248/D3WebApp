@@ -266,32 +266,34 @@ yearsUsed.forEach(element => {
       
   });
     yearAddedTF = false;
-  generatedSet.push(yearValsAdd)
-}
-  )
-    
-console.log(generatedSet)
-    
-   var stackGen = d3.stack()
-  .keys(countries);
-    var stackedSeries = stackGen(generatedSet);
-    console.log(stackedSeries)
-    
-    var groups = svg2.selectAll("g.bars")
-      .data(stackedSeries)
-      .enter().append("g")
-      .attr("class", "bars")
-      .style("fill", "steelblue")
-      .style("stroke", "#000");
-  
-groups.selectAll('rect')
-  .data((d) => d)
-  .enter()
-      .append("rect")
-  .attr('width', 40)
-  .attr('y', (d) => yScale2(d[1]))
-  .attr('x', (d) => xScale2(d.data.year))
-  .attr('height', (d) => yScale2(d[0]) -  yScale2(d[1]));
+    generatedSet.push(yearValsAdd);
+  });
+
+  console.log(generatedSet);
+
+  var stackGen = d3.stack().keys(countries);
+  var stackedSeries = stackGen(generatedSet);
+
+  console.log(stackedSeries);
+
+  var groups = svg2
+    .selectAll("g.bars")
+    .data(stackedSeries)
+    .enter()
+    .append("g")
+    .attr("class", "bars")
+    .style("fill", "steelblue")
+    .style("stroke", "#000");
+
+  groups
+    .selectAll("rect")
+    .data((d) => d)
+    .enter()
+    .append("rect")
+    .attr("width", xScale2.bandwidth())
+    .attr("y", (d) => yScale2(d[1]))
+    .attr("x", (d) => xScale2(d.data.year))
+    .attr("height", (d) => yScale2(d[0]) - yScale2(d[1]));
 
 	updateLabels();
 	addBaselineLine(selectedCountry, metricYearKey);
@@ -529,30 +531,27 @@ console.log(generatedSet)
 		.attr("width", xScale1.bandwidth())
 		.attr("height", (d) => checkNaN(height - yScale1(d.value)))
 
-		.attr("fill", "steelblue");
-	// Update x and y axis for graph 2
-    
-    var stackGen = d3.stack()
-  .keys(countries);
-    var stackedSeries = stackGen(generatedSet);
-        
-    console.log(stackedSeries)
-    
-    var groups = svg2.selectAll("g.bars")
-      .data(stackedSeries)
-      .enter().append("g")
-      .attr("class", "bars")
-      .style("fill", "steelblue")
-      .style("stroke", "#000");
-  
-groups.selectAll('rect')
-  .data((d) => d)
-  .enter()
-      .append("rect")
-  .attr('width', 50)
-  .attr('y', (d) => yScale2(d[1]))
-  .attr('x', (d) => xScale2(d.data.year))
-  .attr('height', (d) => yScale2(d[0]) -  yScale2(d[1]));
+    .attr("fill", "steelblue");
+  // Update x and y axis for graph 2
+
+  var stackGen = d3.stack().keys(countries);
+  var stackedSeries = stackGen(generatedSet);
+
+  console.log(stackedSeries);
+
+  var groups = svg2.selectAll("g.bars").data(stackedSeries);
+
+  groups
+    .selectAll("rect")
+    .data((d) => d)
+    .join("rect")
+    .transition()
+
+    .duration(500)
+    .attr("width", xScale2.bandwidth())
+    .attr("y", (d) => yScale2(d[1]))
+    .attr("x", (d) => xScale2(d.data.year))
+    .attr("height", (d) => yScale2(d[0]) - yScale2(d[1]));
 
 	// Update the labels
 	updateLabels();
