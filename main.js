@@ -24,26 +24,10 @@ function set_size() {
 set_size();
 
 //Mapping for HTML
-var metricMapping = {
-	gdp: "GDP  ($ USD billions PPP)",
-	gdp_per_capita: "GDP per capita in $ (PPP)",
-	health_expenditure: "health expenditure  % of GDP",
-	health_expenditure_per_person: "health expenditure  per person",
-	military_spending: "Military Spending as % of GDP",
-	unemployment: "unemployment (%)",
-};
+var metricMapping = {gdp: "GDP  ($ USD billions PPP)",gdp_per_capita: "GDP per capita in $ (PPP)",health_expenditure: "health expenditure  % of GDP",health_expenditure_per_person: "health expenditure  per person",military_spending: "Military Spending as % of GDP",unemployment: "unemployment (%)",};
+var years = {gdp: ["2018", "2019", "2020", "2021"],gdp_per_capita: ["2018", "2019", "2020", "2021"],health_expenditure: ["2014","2015","2016","2017","2018","2019","2020","2021","2021 or latest"],health_expenditure_per_person: ["2015", "2018", "2019"],military_spending: ["2019", "2021"],unemployment: ["2018", "2021"],};
 
-var years = {
-	gdp: ["2018", "2019", "2020", "2021"],
-	gdp_per_capita: ["2018", "2019", "2020", "2021"],
-	health_expenditure: ["2014","2015","2016","2017","2018","2019","2020","2021","2021 or latest"],
-	health_expenditure_per_person: ["2015", "2018", "2019"],
-	military_spending: ["2019", "2021"],
-	unemployment: ["2018", "2021"],
-};
-
-// GRAPH 1 -- BAR GRAPH
-// Create the svg canvas for graph 1
+// GRAPH 1 -- BAR GRAPH - Create SVG Canvas
 var svg1 = d3
 	.select("#visualization1")
 	.append("svg")
@@ -255,14 +239,7 @@ function populateCountrySelect(data) {
 }
 
 function getYears() {
-	return (years = {
-		gdp: [2018, 2019, 2020, 2021],
-		gdp_per_capita: [2018, 2019, 2020, 2021],
-		health_expenditure: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, "2021 or latest"],
-		health_expenditure_per_person: [2015, 2018, 2019],
-		military_spending: [2019, 2021],
-		unemployment: [2018, 2021],
-	});
+	return (years = {gdp: [2018, 2019, 2020, 2021],gdp_per_capita: [2018, 2019, 2020, 2021],health_expenditure: [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, "2021 or latest"],health_expenditure_per_person: [2015, 2018, 2019],military_spending: [2019, 2021],unemployment: [2018, 2021],});
 }
 
 function calculateSums(metric) {
