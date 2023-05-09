@@ -272,14 +272,9 @@ yearsUsed.forEach(element => {
     
 console.log(generatedSet)
     
-    
    var stackGen = d3.stack()
   .keys(countries);
     var stackedSeries = stackGen(generatedSet);
-    
-    
-    
-    
     console.log(stackedSeries)
     
     var groups = svg2.selectAll("g.bars")
@@ -541,10 +536,7 @@ console.log(generatedSet)
     var stackGen = d3.stack()
   .keys(countries);
     var stackedSeries = stackGen(generatedSet);
-    
-    
-    
-    
+        
     console.log(stackedSeries)
     
     var groups = svg2.selectAll("g.bars")
