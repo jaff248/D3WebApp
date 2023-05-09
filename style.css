@@ -31,7 +31,7 @@ body {
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #373746;
+  background: #7c7c87;
 }
 
 .axis-label {

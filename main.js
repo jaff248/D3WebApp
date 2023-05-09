@@ -1,5 +1,5 @@
 // Set the dimensions of the canvas
-var margin = {top: 50, right: 20, bottom: 120, left: 60};
+var margin = {top: 50, right: 20, bottom: 120, left: 120};
 var width = 2600 - margin.left - margin.right;
 var height = 1300 - margin.top - margin.bottom;
 
@@ -90,7 +90,7 @@ var xAxisLabel2 = svg2
 var yAxisLabel2 = svg2
 	.append("text")
 	.attr("x", -height / 2)
-	.attr("y", -margin.left / 2.5)
+	.attr("y", -margin.left / 1.5)
 	.attr("transform", "rotate(-90)")
 	.style("text-anchor", "middle")
 	.attr("class", "axis-label");
