@@ -327,7 +327,7 @@ d3.csv("countries.csv").then((data) => {
     .data((d) => d)
     .enter()
     .append("rect")
-    .attr("width", 40)
+    .attr("width", xScale2.bandwidth())
     .attr("y", (d) => yScale2(d[1]))
     .attr("x", (d) => xScale2(d.data.year))
     .attr("height", (d) => yScale2(d[0]) - yScale2(d[1]));
@@ -630,7 +630,7 @@ function updateChart() {
     .transition()
 
     .duration(500)
-    .attr("width", 40)
+    .attr("width", xScale2.bandwidth())
     .attr("y", (d) => yScale2(d[1]))
     .attr("x", (d) => xScale2(d.data.year))
     .attr("height", (d) => yScale2(d[0]) - yScale2(d[1]));
