@@ -368,7 +368,7 @@ function updateChart() {
 	var militaryYears = [2019, 2021];
 	var unemploymentYears = [2018, 2021];
 
-	var generatedSet = {};
+	var generatedSet = [];
 	var yearsUsed;
 	console.log(selectedMetric);
 	if (selectedMetric == "GDP  ($ USD billions PPP)") {
@@ -388,14 +388,26 @@ function updateChart() {
 	}
 	console.log(yearsUsed);
 
-	yearsUsed.forEach((element) => {
-		var metricYearKeyTest = selectedMetric + " " + element;
-		yearValsAdd = cleanedData.map((row) => {
-			return {indicator: row.indicator, value: parseFloat(row[metricYearKeyTest].replace(",", "")),};
-		});
-		generatedSet[element] = yearValsAdd;
-	});
-	console.log(generatedSet);
+	var yearAddedTF = false;
+yearsUsed.forEach(element => {
+  var metricYearKeyTest = selectedMetric + " " + element;
+    yearValsAdd = {}
+  cleanedData.map((row) => {
+      if(yearAddedTF == false) {
+          yearAddedTF = true
+        yearValsAdd["year"] = element,
+        yearValsAdd[row.indicator] = checkNaN(parseFloat(row[metricYearKeyTest].replace(",", "")))//,
+        } else { yearValsAdd[row.indicator]=checkNaN(parseFloat(row[metricYearKeyTest].replace(",", "")))//,
+        //;
+    }
+      
+  });
+    yearAddedTF = false;
+  generatedSet.push(yearValsAdd)
+}
+  )
+    
+console.log(generatedSet)
 
 	// Update the yScale domain based on the new metric
 	yScale1
